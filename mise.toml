@@ -1,0 +1,14 @@
+[settings]
+lockfile = true
+locked = true
+minimum_release_age = "7d"
+
+[tools]
+hk = { version = "latest", postinstall = "hk install --mise" }
+pkl = "latest"
+gitleaks = "latest"
+cocogitto = "latest"
+zizmor = "latest"
+actionlint = "latest"
+shfmt = "latest"
+shellcheck = "latest"

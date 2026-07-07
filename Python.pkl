@@ -1,0 +1,14 @@
+amends "./Base.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+import "./Base.pkl" as Base
+
+pythonSteps = new Mapping<String, Step> {
+  ["python-check-ast"] = Builtins.python_check_ast
+  ["python-debug-statements"] = Builtins.python_debug_statements
+  ["ruff"] = Base.optionalCommand("ruff", Builtins.ruff)
+  ["ruff-format"] = Base.optionalCommand("ruff", Builtins.ruff_format)
+}
+
+hooks = Base.defaultHooks(true, (Base.baseSteps) {
+  ...pythonSteps
+})

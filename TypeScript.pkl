@@ -1,0 +1,13 @@
+amends "./Base.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+import "./Base.pkl" as Base
+
+typeScriptSteps = new Mapping<String, Step> {
+  ["oxfmt"] = Base.optionalCommand("oxfmt", Builtins.oxfmt)
+  ["oxlint"] = Base.optionalCommand("oxlint", Builtins.ox_lint)
+  ["tsc"] = Base.optionalCommand("tsc", Builtins.tsc)
+}
+
+hooks = Base.defaultHooks(true, (Base.baseSteps) {
+  ...typeScriptSteps
+})

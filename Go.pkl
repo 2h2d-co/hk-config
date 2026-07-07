@@ -1,0 +1,21 @@
+amends "./Base.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+import "./Base.pkl" as Base
+
+goSteps = new Mapping<String, Step> {
+  ["go-imports"] = Base.optionalCommand("goimports", Builtins.go_imports)
+  ["go-fmt"] = (Base.optionalCommand("gofmt", Builtins.go_fmt)) {
+    depends = List("go-imports")
+  }
+  ["gomod-tidy"] = Base.optionalCommand("go", Builtins.gomod_tidy)
+  ["go-vet"] = (Base.optionalCommand("go", Builtins.go_vet)) {
+    depends = List("go-fmt", "gomod-tidy")
+  }
+  ["go-vuln-check"] = (Base.optionalCommand("govulncheck", Builtins.go_vuln_check)) {
+    depends = List("go-vet")
+  }
+}
+
+hooks = Base.defaultHooks(true, (Base.baseSteps) {
+  ...goSteps
+})

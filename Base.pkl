@@ -1,0 +1,84 @@
+amends "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+
+// Show when conditional steps are skipped because profiles or command/file conditions do not match.
+display_skip_reasons = List("profile-not-enabled", "condition-false")
+
+function commandExistsCondition(command: String): String =
+  "exec('command -v \(command) >/dev/null 2>&1; echo $?') == '0\n'"
+
+function commandMissingCondition(command: String): String =
+  "exec('command -v \(command) >/dev/null 2>&1; echo $?') != '0\n'"
+
+function optionalCommand(command: String, step: Step): Step =
+  (step) {
+    step_condition = commandExistsCondition(command)
+  }
+
+function fileExistsCondition(file: String): String =
+  "exec('test -f \"\(file)\"; echo $?') == '0\n'"
+
+function whenFileExists(file: String, step: Step): Step =
+  (step) {
+    step_condition = fileExistsCondition(file)
+  }
+
+conventionalCommitTypes = "build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release"
+
+commitMessageSteps = new Mapping<String, Step> {
+  ["cocogitto-commit-msg"] = optionalCommand("cog", Builtins.cocogitto_commit_msg)
+  ["check-conventional-commit"] = (Builtins.check_conventional_commit) {
+    step_condition = commandMissingCondition("cog")
+    check = "hk util check-conventional-commit --allowed-types=\(conventionalCommitTypes) \"{{commit_msg_file}}\""
+  }
+}
+
+function defaultHooks(autofix: Boolean, useSteps: Mapping<String, Step>): Mapping<String, Hook> =
+  new Mapping<String, Hook> {
+    ["pre-commit"] {
+      fix = autofix
+      stash = "git"
+      steps = useSteps
+    }
+
+    ["pre-push"] {
+      steps = useSteps
+    }
+
+    ["commit-msg"] {
+      steps = commitMessageSteps
+    }
+
+    ["fix"] {
+      fix = true
+      steps = useSteps
+    }
+
+    ["check"] {
+      steps = useSteps
+    }
+  }
+
+baseSteps = new Mapping<String, Step> {
+  ["check-added-large-files"] = Builtins.check_added_large_files
+  ["check-case-conflict"] = Builtins.check_case_conflict
+  ["check-executables-have-shebangs"] = Builtins.check_executables_have_shebangs
+  ["check-merge-conflict"] = Builtins.check_merge_conflict
+  ["check-symlinks"] = Builtins.check_symlinks
+  ["byte-order-marker"] = Builtins.byte_order_marker
+  ["mixed-line-ending"] = Builtins.mixed_line_ending
+  ["newlines"] = Builtins.newlines
+  ["trailing-whitespace"] = Builtins.trailing_whitespace
+  ["detect-private-key"] = Builtins.detect_private_key
+
+  ["gitleaks"] = optionalCommand("gitleaks", Builtins.gitleaks)
+  ["mise-installed"] {
+    step_condition = fileExistsCondition("mise.toml")
+    check = "mise --version >/dev/null 2>&1"
+  }
+  ["mise"] = (whenFileExists("mise.toml", Builtins.mise)) {
+    depends = List("mise-installed")
+  }
+}
+
+hooks = defaultHooks(true, baseSteps)

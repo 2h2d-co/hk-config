@@ -1,0 +1,11 @@
+# OS/editor noise
+.DS_Store
+*~
+
+# Python cache artifacts
+__pycache__/
+*.py[cod]
+
+# Local hk overrides
+hk.local.pkl
+.config/hk.local.pkl
