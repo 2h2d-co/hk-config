@@ -1,0 +1,124 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  github-release:
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create or update GitHub releases and upload package assets.
+      id-token: write # Required to mint the OIDC token used to sign artifact attestations.
+      attestations: write # Required to persist GitHub artifact attestations.
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install mise tools
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+        with:
+          version: "2026.6.14"
+          install: true
+          install_args: --locked pkl
+          cache: false
+
+      - name: Validate release tag
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "release tags must match vX.Y.Z" >&2
+            exit 1
+          fi
+          version=${GITHUB_REF_NAME#v}
+          package_uri="package://github.com/2h2d-co/hk-config/releases/download/$GITHUB_REF_NAME/hk-config@$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "package_uri=$package_uri" >> "$GITHUB_OUTPUT"
+
+      - name: Package Pkl release artifacts
+        shell: bash
+        env:
+          HK_CONFIG_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          pkl project package --skip-publish-check --output-path dist .
+
+      - name: Attest Pkl package artifacts
+        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+        with:
+          subject-path: |
+            dist/hk-config@${{ steps.release.outputs.version }}
+            dist/hk-config@${{ steps.release.outputs.version }}.sha256
+            dist/hk-config@${{ steps.release.outputs.version }}.zip
+            dist/hk-config@${{ steps.release.outputs.version }}.zip.sha256
+
+      - name: Prepare release notes
+        shell: bash
+        env:
+          PACKAGE_URI: ${{ steps.release.outputs.package_uri }}
+        run: |
+          set -euo pipefail
+          scripts/extract-release-notes.sh "$GITHUB_REF_NAME" > release-notes.md
+          cat >> release-notes.md <<EOF
+
+          ## Use this release
+
+          Pin downstream hk configs to this package:
+
+          \`\`\`pkl
+          amends "$PACKAGE_URI#/Base.pkl"
+          \`\`\`
+
+          Import additional presets from the same package, e.g.:
+
+          \`\`\`pkl
+          import "$PACKAGE_URI#/Python.pkl" as Python
+          \`\`\`
+          EOF
+
+      - name: Create or update GitHub release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" \
+              --title "$GITHUB_REF_NAME" \
+              --notes-file release-notes.md \
+              --verify-tag
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --title "$GITHUB_REF_NAME" \
+              --notes-file release-notes.md \
+              --verify-tag
+          fi
+
+      - name: Upload Pkl package artifacts
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          assets=(
+            "dist/hk-config@$VERSION"
+            "dist/hk-config@$VERSION.sha256"
+            "dist/hk-config@$VERSION.zip"
+            "dist/hk-config@$VERSION.zip.sha256"
+          )
+          gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber

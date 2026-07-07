@@ -1,0 +1,27 @@
+amends "pkl:Project"
+
+package {
+  name = "hk-config"
+  baseUri = "package://github.com/2h2d-co/hk-config/releases/download/v\(version)/hk-config"
+  version = read?("env:HK_CONFIG_VERSION") ?? "0.0.0"
+  packageZipUrl = "https://github.com/2h2d-co/hk-config/releases/download/v\(version)/hk-config@\(version).zip"
+  description = "Shared hk configuration presets for 2h2d repositories."
+  authors {
+    "Two Humans and Two Dogs LLC <hello@2h2d.co>"
+  }
+  sourceCode = "https://github.com/2h2d-co/hk-config"
+  sourceCodeUrlScheme = "\(sourceCode)/blob/v\(version)%{path}#L%{line}-L%{endLine}"
+  issueTracker = "https://github.com/2h2d-co/hk-config/issues"
+  license = "MIT"
+  exclude {
+    "PklProject"
+    "PklProject.deps.json"
+    ".**"
+    "*.md"
+    "cog.toml"
+    "hk.pkl"
+    "mise.lock"
+    "mise.toml"
+    "scripts/**"
+  }
+}
