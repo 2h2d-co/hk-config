@@ -16,7 +16,7 @@ jobs:
     name: GitHub Release
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Required to create or update GitHub releases and upload package assets.
+      contents: write # Required to create GitHub releases and upload package assets.
       id-token: write # Required to mint the OIDC token used to sign artifact attestations.
       attestations: write # Required to persist GitHub artifact attestations.
     steps:
@@ -90,25 +90,7 @@ jobs:
           \`\`\`
           EOF
 
-      - name: Create or update GitHub release
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release edit "$GITHUB_REF_NAME" \
-              --title "$GITHUB_REF_NAME" \
-              --notes-file release-notes.md \
-              --verify-tag
-          else
-            gh release create "$GITHUB_REF_NAME" \
-              --title "$GITHUB_REF_NAME" \
-              --notes-file release-notes.md \
-              --verify-tag
-          fi
-
-      - name: Upload Pkl package artifacts
+      - name: Create GitHub release
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -121,4 +103,11 @@ jobs:
             "dist/hk-config@$VERSION.zip"
             "dist/hk-config@$VERSION.zip.sha256"
           )
-          gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "release $GITHUB_REF_NAME already exists; releases are immutable" >&2
+            exit 1
+          fi
+          gh release create "$GITHUB_REF_NAME" "${assets[@]}" \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file release-notes.md \
+            --verify-tag

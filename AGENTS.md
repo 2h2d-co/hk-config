@@ -49,7 +49,7 @@ git push origin main vX.Y.Z
 
 ## GitHub releases and downstream imports
 
-Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates or updates the GitHub Release from the matching `CHANGELOG.md` section.
+Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release from the matching `CHANGELOG.md` section.
 
 Downstream repos should pin imports to release packages, for example:
 
