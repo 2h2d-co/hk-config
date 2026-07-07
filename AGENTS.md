@@ -27,7 +27,7 @@
    git commit --allow-empty -m "release: vX.Y.Z"
    ```
 
-   The hk `commit-msg` hook runs `scripts/update-release-changelog.sh`, which uses `cog changelog` to render the unreleased range and stage `CHANGELOG.md` for that release commit. The hk `post-commit` hook runs `scripts/tag-release-commit.sh`, which creates the matching `vX.Y.Z` tag on the release commit.
+   The hk `prepare-commit-msg` hook runs `scripts/update-release-changelog.sh`, which uses `cog changelog` to render the unreleased range and stage `CHANGELOG.md` before Git finalizes the release commit. The hk `post-commit` hook runs `scripts/tag-release-commit.sh`, which creates the matching `vX.Y.Z` tag on the release commit.
 
 4. Push the release commit and tag:
 

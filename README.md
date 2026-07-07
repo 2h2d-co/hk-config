@@ -144,7 +144,7 @@ This repo uses Cocogitto plus hk hooks for releases:
 
 1. Create normal changes with conventional commits.
 2. Create a release commit with `git commit --allow-empty -m "release: vX.Y.Z"`.
-3. hk's `commit-msg` hook renders the unreleased range with `cog changelog`, updates `CHANGELOG.md`, and stages it.
+3. hk's `prepare-commit-msg` hook renders the unreleased range with `cog changelog`, updates `CHANGELOG.md`, and stages it before Git finalizes the commit.
 4. hk's `post-commit` hook creates the matching `vX.Y.Z` tag.
 5. Push `main` and the tag; `.github/workflows/release.yml` packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release with notes and pinned package examples.
 

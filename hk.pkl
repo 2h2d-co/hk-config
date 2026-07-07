@@ -10,9 +10,8 @@ local repoSteps = new Mapping<String, Step> {
   }
 }
 
-local releaseCommitMessageSteps = (Base.commitMessageSteps) {
+local releasePrepareCommitMessageSteps = new Mapping<String, Step> {
   ["release-changelog"] {
-    depends = List("cocogitto-commit-msg")
     check = "scripts/update-release-changelog.sh \"{{commit_msg_file}}\""
   }
 }
@@ -28,8 +27,8 @@ hooks = (Base.defaultHooks(true, (Base.baseSteps) {
   ...Shell.shellSteps
   ...repoSteps
 })) {
-  ["commit-msg"] {
-    steps = releaseCommitMessageSteps
+  ["prepare-commit-msg"] {
+    steps = releasePrepareCommitMessageSteps
   }
   ["post-commit"] {
     steps = releasePostCommitSteps
