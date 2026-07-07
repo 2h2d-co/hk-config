@@ -1,0 +1,37 @@
+amends "./Base.pkl"
+import "./Base.pkl" as Base
+import "./GitHubActions.pkl" as GitHubActions
+import "./Shell.pkl" as Shell
+
+local repoSteps = new Mapping<String, Step> {
+  ["hk-config-validate"] {
+    glob = List("*.pkl")
+    check = "for f in {{files}}; do HK_FILE=\"$f\" hk validate; done"
+  }
+}
+
+local releaseCommitMessageSteps = (Base.commitMessageSteps) {
+  ["release-changelog"] {
+    depends = List("cocogitto-commit-msg")
+    check = "scripts/update-release-changelog.sh \"{{commit_msg_file}}\""
+  }
+}
+
+local releasePostCommitSteps = new Mapping<String, Step> {
+  ["release-tag"] {
+    check = "scripts/tag-release-commit.sh"
+  }
+}
+
+hooks = (Base.defaultHooks(true, (Base.baseSteps) {
+  ...GitHubActions.gitHubActionsSteps
+  ...Shell.shellSteps
+  ...repoSteps
+})) {
+  ["commit-msg"] {
+    steps = releaseCommitMessageSteps
+  }
+  ["post-commit"] {
+    steps = releasePostCommitSteps
+  }
+}

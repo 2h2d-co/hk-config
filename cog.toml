@@ -1,0 +1,17 @@
+# :schema https://docs.cocogitto.io/cog-schema.json
+
+branch_whitelist = ["main"]
+from_latest_tag = true
+ignore_fixup_commits = true
+ignore_merge_commits = true
+tag_prefix = "v"
+
+[commit_types]
+release = { changelog_title = "Releases", omit_from_changelog = true }
+
+[changelog]
+path = "CHANGELOG.md"
+template = "remote"
+remote = "github.com"
+owner = "2h2d-co"
+repository = "hk-config"
