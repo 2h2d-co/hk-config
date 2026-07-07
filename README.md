@@ -140,13 +140,12 @@ hooks = Base.defaultHooks(true, (Base.baseSteps) {
 
 ## Release workflow
 
-This repo uses Cocogitto plus hk hooks for releases:
+This repo uses Cocogitto plus an explicit release script:
 
 1. Create normal changes with conventional commits.
-2. Create a release commit with `git commit --allow-empty -m "release: vX.Y.Z"`.
-3. hk's `prepare-commit-msg` hook renders the unreleased range with `cog changelog`, updates `CHANGELOG.md`, and stages it before Git finalizes the commit.
-4. hk's `post-commit` hook creates the matching `vX.Y.Z` tag.
-5. Push `main` and the tag; `.github/workflows/release.yml` packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release with notes and pinned package examples.
+2. Run `scripts/release.sh X.Y.Z`.
+3. The script renders the unreleased range with `cog changelog`, updates and stages `CHANGELOG.md`, creates the signed `release: vX.Y.Z` commit, and creates the matching `vX.Y.Z` tag.
+4. Push `main` and the tag; `.github/workflows/release.yml` packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release with notes and pinned package examples.
 
 Downstream repos should pin imports to release packages, for example:
 

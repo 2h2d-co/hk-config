@@ -21,31 +21,19 @@
 
 1. Make regular changes with conventional commit messages such as `feat: ...`, `fix: ...`, `docs: ...`, or `ci: ...`.
 2. Ensure hk hooks are installed, e.g. `hk install --mise` or the global equivalent.
-3. Create the release commit with the target version:
+3. Create the release commit and tag with the target version:
 
    ```sh
-   git commit --allow-empty -m "release: vX.Y.Z"
+   scripts/release.sh X.Y.Z
    ```
 
-   The hk `prepare-commit-msg` hook runs `scripts/update-release-changelog.sh`, which uses `cog changelog` to render the unreleased range and stage `CHANGELOG.md` before Git finalizes the release commit. The hk `post-commit` hook runs `scripts/tag-release-commit.sh`, which creates the matching `vX.Y.Z` tag on the release commit.
+   The release script uses `cog changelog` to render the unreleased range, updates and stages `CHANGELOG.md`, creates the signed `release: vX.Y.Z` commit, and creates the matching `vX.Y.Z` tag.
 
 4. Push the release commit and tag:
 
    ```sh
    git push origin main vX.Y.Z
    ```
-
-If hooks are unavailable, run the release scripts manually:
-
-```sh
-msg=$(mktemp)
-printf 'release: vX.Y.Z\n' > "$msg"
-scripts/update-release-changelog.sh "$msg"
-rm "$msg"
-git commit -m "release: vX.Y.Z"
-scripts/tag-release-commit.sh
-git push origin main vX.Y.Z
-```
 
 ## GitHub releases and downstream imports
 

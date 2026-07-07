@@ -10,27 +10,8 @@ local repoSteps = new Mapping<String, Step> {
   }
 }
 
-local releasePrepareCommitMessageSteps = new Mapping<String, Step> {
-  ["release-changelog"] {
-    check = "scripts/update-release-changelog.sh \"{{commit_msg_file}}\""
-  }
-}
-
-local releasePostCommitSteps = new Mapping<String, Step> {
-  ["release-tag"] {
-    check = "scripts/tag-release-commit.sh"
-  }
-}
-
-hooks = (Base.defaultHooks(true, (Base.baseSteps) {
+hooks = Base.defaultHooks(true, (Base.baseSteps) {
   ...GitHubActions.gitHubActionsSteps
   ...Shell.shellSteps
   ...repoSteps
-})) {
-  ["prepare-commit-msg"] {
-    steps = releasePrepareCommitMessageSteps
-  }
-  ["post-commit"] {
-    steps = releasePostCommitSteps
-  }
-}
+})
