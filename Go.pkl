@@ -11,6 +11,9 @@ goSteps = new Mapping<String, Step> {
   ["go-vet"] = (Base.optionalCommand("go", Builtins.go_vet)) {
     depends = List("go-fmt", "gomod-tidy")
   }
+  ["golangci-lint"] = (Base.optionalCommand("golangci-lint", Builtins.golangci_lint)) {
+    depends = List("go-fmt", "gomod-tidy")
+  }
   ["go-vuln-check"] = (Base.optionalCommand("govulncheck", Builtins.go_vuln_check)) {
     depends = List("go-vet")
   }

@@ -79,6 +79,8 @@ amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-confi
 
 ### Go repo
 
+The Go preset includes formatting, module tidiness, vetting, optional vulnerability checks, and `golangci-lint` when installed.
+
 ```pkl
 amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Go.pkl"
 ```
