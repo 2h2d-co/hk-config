@@ -4,6 +4,11 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.0.5](https://github.com/2h2d-co/hk-config/compare/v0.0.4..v0.0.5) - 2026-07-13
+#### Features
+- centralize golangci-lint checks - ([e0142f8](https://github.com/2h2d-co/hk-config/commit/e0142f8d8d559cfa7115e674c29a36abe201b423)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.0.4](https://github.com/2h2d-co/hk-config/compare/v0.0.3..v0.0.4) - 2026-07-13
 #### Features
 - audit ignored zizmor findings - ([891f9d9](https://github.com/2h2d-co/hk-config/commit/891f9d903215f6ea5c3ef1fadb2f545f9e3a5d6b)) - Kaan Ozdokmeci
