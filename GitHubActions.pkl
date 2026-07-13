@@ -7,8 +7,8 @@ gitHubActionsSteps = new Mapping<String, Step> {
   ["zizmor"] = Base.optionalCommand(
     "zizmor",
     (Builtins.zizmor) {
-      check_diff = "zizmor --no-progress --pedantic {{ files }}"
-      fix = "zizmor --no-progress --pedantic --fix {{ files }}"
+      check_diff = "zizmor --no-progress --pedantic --no-ignores {{ files }}"
+      fix = "zizmor --no-progress --pedantic --no-ignores --fix {{ files }}"
     },
   )
 }
