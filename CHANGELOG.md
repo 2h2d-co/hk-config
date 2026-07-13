@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.2](https://github.com/2h2d-co/hk-config/compare/v0.1.1..v0.1.2) - 2026-07-14
+#### Bug Fixes
+- scope gitleaks to selected files - ([e49d6ad](https://github.com/2h2d-co/hk-config/commit/e49d6adf107d5f9ba700e0cd8082619b035e6c81)) - Kaan Ozdokmeci
+- keep markdown checks while honoring formatter ignores - ([06f4c4d](https://github.com/2h2d-co/hk-config/commit/06f4c4d0205a0a7ef7a09986bffcf4db0edb3b32)) - Kaan Ozdokmeci
+- preserve markdown hard line breaks - ([7214321](https://github.com/2h2d-co/hk-config/commit/721432104b80fa939f934843b8c99ea2e364985d)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.1.1](https://github.com/2h2d-co/hk-config/compare/v0.1.0..v0.1.1) - 2026-07-13
 #### Bug Fixes
 - avoid partial import function evaluation - ([32a3ee5](https://github.com/2h2d-co/hk-config/commit/32a3ee50b774eb349e96aa12f0ce4a8490124908)) - Kaan Ozdokmeci
