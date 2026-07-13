@@ -4,6 +4,11 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.1](https://github.com/2h2d-co/hk-config/compare/v0.1.0..v0.1.1) - 2026-07-13
+#### Bug Fixes
+- avoid partial import function evaluation - ([32a3ee5](https://github.com/2h2d-co/hk-config/commit/32a3ee50b774eb349e96aa12f0ce4a8490124908)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.1.0](https://github.com/2h2d-co/hk-config/compare/v0.0.5..v0.1.0) - 2026-07-13
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) support hk 1.50.0 - ([dd23cb8](https://github.com/2h2d-co/hk-config/commit/dd23cb8b09637d668f45b4cf8ac6325e8d9ca0cb)) - Kaan Ozdokmeci
