@@ -77,13 +77,14 @@ jobs:
 
           ## Use this release
 
-          Pin downstream hk configs to this package:
+          Amend hk's matching config schema and import this package:
 
           \`\`\`pkl
-          amends "$PACKAGE_URI#/Base.pkl"
+          amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+          import "$PACKAGE_URI#/Base.pkl" as Base
           \`\`\`
 
-          Import additional presets from the same package, e.g.:
+          Import additional step libraries from the same package, e.g.:
 
           \`\`\`pkl
           import "$PACKAGE_URI#/Python.pkl" as Python

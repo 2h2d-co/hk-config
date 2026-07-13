@@ -1,8 +1,8 @@
-amends "./Base.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
 import "./Base.pkl" as Base
 
-shellSteps = new Mapping<String, Step> {
+shellSteps = new Mapping<String, Config.Step> {
   ["shfmt"] = (Base.optionalCommand("shfmt", Builtins.shfmt)) {
     glob = List("**/*.sh", "**/*.bash")
   }
@@ -10,7 +10,3 @@ shellSteps = new Mapping<String, Step> {
     depends = List("shfmt")
   }
 }
-
-hooks = Base.defaultHooks(true, (Base.baseSteps) {
-  ...shellSteps
-})

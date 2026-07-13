@@ -1,15 +1,17 @@
-amends "./Base.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+
 import "./Base.pkl" as Base
 import "./GitHubActions.pkl" as GitHubActions
 import "./Shell.pkl" as Shell
 
 local repoSteps = new Mapping<String, Step> {
-  ["hk-config-validate"] {
+  ["pkl-eval"] {
     glob = List("*.pkl")
-    check = "for f in {{files}}; do HK_FILE=\"$f\" hk validate; done"
+    check = "for f in {{files}}; do pkl eval \"$f\" >/dev/null; done"
   }
 }
 
+display_skip_reasons = Base.displaySkipReasons
 hooks = Base.defaultHooks(true, (Base.baseSteps) {
   ...GitHubActions.gitHubActionsSteps
   ...Shell.shellSteps

@@ -1,8 +1,8 @@
-amends "./Base.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
 import "./Base.pkl" as Base
 
-gitHubActionsSteps = new Mapping<String, Step> {
+gitHubActionsSteps = new Mapping<String, Config.Step> {
   ["actionlint"] = Base.optionalCommand("actionlint", Builtins.actionlint)
   ["zizmor"] = Base.optionalCommand(
     "zizmor",
@@ -12,7 +12,3 @@ gitHubActionsSteps = new Mapping<String, Step> {
     },
   )
 }
-
-hooks = Base.defaultHooks(true, (Base.baseSteps) {
-  ...gitHubActionsSteps
-})

@@ -1,6 +1,6 @@
 # hk-config Project Instructions
 
-`hk-config` is the shared hk configuration repo for 2h2d projects. Keep presets composable: mixed repos should amend `Base.pkl`, import stack-specific step maps, and spread them into one hooks map.
+`hk-config` is the shared hk configuration repo for 2h2d projects. Keep presets composable: project `hk.pkl` files amend hk's `Config.pkl` directly, import `Base.pkl` and stack-specific step maps, and spread them into one hooks map.
 
 ## Commit and release conventions
 
@@ -39,13 +39,14 @@
 
 Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release from the matching `CHANGELOG.md` section.
 
-Downstream repos should pin imports to release packages, for example:
+Downstream repos should amend the matching hk `Config.pkl` and pin imports to release packages, for example:
 
 ```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+import "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl" as Base
 ```
 
-Use the same package version for any imported preset modules.
+Use the same package version for every imported library module.
 
 ## Validation
 
@@ -59,8 +60,8 @@ HK_CONFIG_VERSION=0.0.0 pkl project package --skip-publish-check --output-path "
 rm -rf "$tmp"
 ```
 
-For GitHub Actions changes, also validate the Actions preset directly:
+Library modules are validated with `pkl eval`; only the project `hk.pkl` is an hk configuration module. For GitHub Actions changes, also evaluate the library directly:
 
 ```sh
-HK_FILE=GitHubActions.pkl hk check --all --check
+pkl eval GitHubActions.pkl >/dev/null
 ```

@@ -1,8 +1,8 @@
-amends "./Base.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
 import "./Base.pkl" as Base
 
-goSteps = new Mapping<String, Step> {
+goSteps = new Mapping<String, Config.Step> {
   ["go-imports"] = Base.optionalCommand("goimports", Builtins.go_imports)
   ["go-fmt"] = (Base.optionalCommand("gofmt", Builtins.go_fmt)) {
     depends = List("go-imports")
@@ -18,7 +18,3 @@ goSteps = new Mapping<String, Step> {
     depends = List("go-vet")
   }
 }
-
-hooks = Base.defaultHooks(true, (Base.baseSteps) {
-  ...goSteps
-})

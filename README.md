@@ -2,16 +2,16 @@
 
 Shared [hk](https://hk.jdx.dev/) configuration for 2h2d repositories.
 
-These configs are committed Pkl modules that project repos can amend/import. They are different from `~/.config/hk/config.pkl`: this repo is for team-shared policy, not per-user preferences.
+These configs are committed Pkl library modules that project repos import. They are different from `~/.config/hk/config.pkl`: this repo is for team-shared policy, not per-user preferences.
 
 ## Files
 
-- `Base.pkl` — general hygiene, secret-safety, and conventional commit checks for most repos.
-- `Python.pkl` — `Base.pkl` plus Python syntax/debug checks and optional Ruff checks.
-- `TypeScript.pkl` — `Base.pkl` plus optional Oxfmt, Oxlint, and TypeScript checks.
-- `Go.pkl` — `Base.pkl` plus optional Go formatting, module, vet, and vulnerability checks.
-- `GitHubActions.pkl` — `Base.pkl` plus optional GitHub Actions linting and security checks.
-- `Shell.pkl` — `Base.pkl` plus optional shfmt and ShellCheck for `.sh`/`.bash` files.
+- `Base.pkl` — reusable helpers and general hygiene, secret-safety, and conventional commit steps.
+- `Python.pkl` — Python syntax/debug and optional Ruff steps.
+- `TypeScript.pkl` — optional Oxfmt, Oxlint, and TypeScript steps.
+- `Go.pkl` — optional Go formatting, module, vet, vulnerability, and golangci-lint steps.
+- `GitHubActions.pkl` — optional GitHub Actions linting and security steps.
+- `Shell.pkl` — optional shfmt and ShellCheck steps for `.sh`/`.bash` files.
 - `PklProject` — Pkl package metadata for release artifacts.
 - `cog.toml` and `CHANGELOG.md` — Cocogitto release/changelog configuration for this repo.
 - `AGENTS.md` — repository conventions for coding agents and humans.
@@ -19,7 +19,9 @@ These configs are committed Pkl modules that project repos can amend/import. The
 
 ## Architecture
 
-hk uses one project config file and Pkl permits only one module-level `amends` clause. Treat `Base.pkl` as the shared base to amend when composing multiple presets. Stack-specific files are both convenience presets for focused repos and step libraries for mixed repos: import their exported step mappings, then spread them into one hooks map.
+Every project `hk.pkl` amends hk's version-matched `Config.pkl` directly. The modules in this package are regular Pkl libraries: `Base.pkl` exports shared helpers and base steps, while stack-specific modules export step mappings. Project configs import the required mappings, spread them into one steps map, and assign the hooks returned by `Base.defaultHooks(...)`.
+
+Keeping library modules separate from the amended hk configuration is required by current Pkl semantics, which do not permit amended modules to add exported methods.
 
 ## Conditional external tools
 
@@ -59,48 +61,10 @@ Use the Pkl package artifact published with each release. The Git tag includes t
 package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0
 ```
 
-### Base only
+Every project amends hk's `Config.pkl` directly, imports the library modules it needs, and assembles its hooks:
 
 ```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Base.pkl"
-```
-
-### Python repo
-
-```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Python.pkl"
-```
-
-### TypeScript repo
-
-```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/TypeScript.pkl"
-```
-
-### Go repo
-
-The Go preset includes formatting, module tidiness, vetting, optional vulnerability checks, and `golangci-lint` when installed.
-
-```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Go.pkl"
-```
-
-### GitHub Actions repo
-
-```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/GitHubActions.pkl"
-```
-
-### Shell scripts repo
-
-```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Shell.pkl"
-```
-
-### Compose multiple configs
-
-```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Base.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
 
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Base.pkl" as Base
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Python.pkl" as Python
@@ -108,6 +72,8 @@ import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-confi
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Go.pkl" as Go
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/GitHubActions.pkl" as GitHubActions
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Shell.pkl" as Shell
+
+display_skip_reasons = Base.displaySkipReasons
 
 local steps = (Base.baseSteps) {
   ...Python.pythonSteps
@@ -120,20 +86,23 @@ local steps = (Base.baseSteps) {
 hooks = Base.defaultHooks(true, steps)
 ```
 
+Import only the stack modules the project uses. For base-only configuration, import only `Base.pkl` and pass `Base.baseSteps` to `Base.defaultHooks(...)`.
+
 ### Add repo-local steps
 
 ```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Python.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
 
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Base.pkl" as Base
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.0/hk-config@0.1.0#/Python.pkl" as Python
-import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
   ["taplo"] = Base.optionalCommand("taplo", Builtins.taplo)
   ["taplo-format"] = Base.optionalCommand("taplo", Builtins.taplo_format)
 }
 
+display_skip_reasons = Base.displaySkipReasons
 hooks = Base.defaultHooks(true, (Base.baseSteps) {
   ...Python.pythonSteps
   ...repoSteps
