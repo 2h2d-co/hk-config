@@ -23,9 +23,7 @@ baseSteps = new Mapping<String, Config.Step> {
   ["byte-order-marker"] = Builtins.byte_order_marker
   ["mixed-line-ending"] = Builtins.mixed_line_ending
   ["newlines"] = Builtins.newlines
-  ["trailing-whitespace"] = (Builtins.trailing_whitespace) {
-    exclude = List("**/*.md", "**/*.mdx")
-  }
+  ["trailing-whitespace"] = Builtins.trailing_whitespace
   ["detect-private-key"] = Builtins.detect_private_key
 
   ["gitleaks"] = (Builtins.gitleaks) {

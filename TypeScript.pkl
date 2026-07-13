@@ -3,8 +3,10 @@ import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtin
 
 typeScriptSteps = new Mapping<String, Config.Step> {
   ["oxfmt"] = (Builtins.oxfmt) {
-    exclude = List("**/*.md", "**/*.mdx")
     step_condition = "exec('command -v oxfmt >/dev/null 2>&1; echo $?') == '0\n'"
+    check = "oxfmt --check --no-error-on-unmatched-pattern {{files}}"
+    check_list_files = "oxfmt --list-different --no-error-on-unmatched-pattern {{files}}"
+    fix = "oxfmt --write --no-error-on-unmatched-pattern {{files}}"
   }
   ["oxlint"] = (Builtins.ox_lint) {
     step_condition = "exec('command -v oxlint >/dev/null 2>&1; echo $?') == '0\n'"
