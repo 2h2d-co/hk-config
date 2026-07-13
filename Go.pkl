@@ -1,20 +1,27 @@
 import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
 import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
-import "./Base.pkl" as Base
 
 goSteps = new Mapping<String, Config.Step> {
-  ["go-imports"] = Base.optionalCommand("goimports", Builtins.go_imports)
-  ["go-fmt"] = (Base.optionalCommand("gofmt", Builtins.go_fmt)) {
+  ["go-imports"] = (Builtins.go_imports) {
+    step_condition = "exec('command -v goimports >/dev/null 2>&1; echo $?') == '0\n'"
+  }
+  ["go-fmt"] = (Builtins.go_fmt) {
+    step_condition = "exec('command -v gofmt >/dev/null 2>&1; echo $?') == '0\n'"
     depends = List("go-imports")
   }
-  ["gomod-tidy"] = Base.optionalCommand("go", Builtins.gomod_tidy)
-  ["go-vet"] = (Base.optionalCommand("go", Builtins.go_vet)) {
+  ["gomod-tidy"] = (Builtins.gomod_tidy) {
+    step_condition = "exec('command -v go >/dev/null 2>&1; echo $?') == '0\n'"
+  }
+  ["go-vet"] = (Builtins.go_vet) {
+    step_condition = "exec('command -v go >/dev/null 2>&1; echo $?') == '0\n'"
     depends = List("go-fmt", "gomod-tidy")
   }
-  ["golangci-lint"] = (Base.optionalCommand("golangci-lint", Builtins.golangci_lint)) {
+  ["golangci-lint"] = (Builtins.golangci_lint) {
+    step_condition = "exec('command -v golangci-lint >/dev/null 2>&1; echo $?') == '0\n'"
     depends = List("go-fmt", "gomod-tidy")
   }
-  ["go-vuln-check"] = (Base.optionalCommand("govulncheck", Builtins.go_vuln_check)) {
+  ["go-vuln-check"] = (Builtins.go_vuln_check) {
+    step_condition = "exec('command -v govulncheck >/dev/null 2>&1; echo $?') == '0\n'"
     depends = List("go-vet")
   }
 }

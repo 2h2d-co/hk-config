@@ -1,10 +1,13 @@
 import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
 import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
-import "./Base.pkl" as Base
 
 pythonSteps = new Mapping<String, Config.Step> {
   ["python-check-ast"] = Builtins.python_check_ast
   ["python-debug-statements"] = Builtins.python_debug_statements
-  ["ruff"] = Base.optionalCommand("ruff", Builtins.ruff)
-  ["ruff-format"] = Base.optionalCommand("ruff", Builtins.ruff_format)
+  ["ruff"] = (Builtins.ruff) {
+    step_condition = "exec('command -v ruff >/dev/null 2>&1; echo $?') == '0\n'"
+  }
+  ["ruff-format"] = (Builtins.ruff_format) {
+    step_condition = "exec('command -v ruff >/dev/null 2>&1; echo $?') == '0\n'"
+  }
 }

@@ -4,52 +4,15 @@ import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtin
 // Show when conditional steps are skipped because profiles or command/file conditions do not match.
 displaySkipReasons = List("profile-not-enabled", "condition-false")
 
-function optionalCommand(command: String, step: Config.Step): Config.Step =
-  (step) {
-    step_condition = "exec('command -v \(command) >/dev/null 2>&1; echo $?') == '0\n'"
+commitMessageSteps = new Mapping<String, Config.Step> {
+  ["cocogitto-commit-msg"] = (Builtins.cocogitto_commit_msg) {
+    step_condition = "exec('command -v cog >/dev/null 2>&1; echo $?') == '0\n'"
   }
-
-function whenFileExists(file: String, step: Config.Step): Config.Step =
-  (step) {
-    step_condition = "exec('test -f \"\(file)\"; echo $?') == '0\n'"
+  ["check-conventional-commit"] = (Builtins.check_conventional_commit) {
+    step_condition = "exec('command -v cog >/dev/null 2>&1; echo $?') != '0\n'"
+    check = "hk util check-conventional-commit --allowed-types=build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release \"{{commit_msg_file}}\""
   }
-
-function defaultHooks(
-  autofix: Boolean,
-  useSteps: Mapping<String, Config.Step>,
-): Mapping<String, Config.Hook> =
-  new Mapping<String, Config.Hook> {
-    ["pre-commit"] {
-      fix = autofix
-      stash = "git"
-      steps = useSteps
-    }
-
-    ["pre-push"] {
-      steps = useSteps
-    }
-
-    ["commit-msg"] {
-      steps = new Mapping<String, Config.Step> {
-        ["cocogitto-commit-msg"] = (Builtins.cocogitto_commit_msg) {
-          step_condition = "exec('command -v cog >/dev/null 2>&1; echo $?') == '0\n'"
-        }
-        ["check-conventional-commit"] = (Builtins.check_conventional_commit) {
-          step_condition = "exec('command -v cog >/dev/null 2>&1; echo $?') != '0\n'"
-          check = "hk util check-conventional-commit --allowed-types=build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release \"{{commit_msg_file}}\""
-        }
-      }
-    }
-
-    ["fix"] {
-      fix = true
-      steps = useSteps
-    }
-
-    ["check"] {
-      steps = useSteps
-    }
-  }
+}
 
 baseSteps = new Mapping<String, Config.Step> {
   ["check-added-large-files"] = Builtins.check_added_large_files

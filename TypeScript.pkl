@@ -1,9 +1,14 @@
 import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
 import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
-import "./Base.pkl" as Base
 
 typeScriptSteps = new Mapping<String, Config.Step> {
-  ["oxfmt"] = Base.optionalCommand("oxfmt", Builtins.oxfmt)
-  ["oxlint"] = Base.optionalCommand("oxlint", Builtins.ox_lint)
-  ["tsc"] = Base.optionalCommand("tsc", Builtins.tsc)
+  ["oxfmt"] = (Builtins.oxfmt) {
+    step_condition = "exec('command -v oxfmt >/dev/null 2>&1; echo $?') == '0\n'"
+  }
+  ["oxlint"] = (Builtins.ox_lint) {
+    step_condition = "exec('command -v oxlint >/dev/null 2>&1; echo $?') == '0\n'"
+  }
+  ["tsc"] = (Builtins.tsc) {
+    step_condition = "exec('command -v tsc >/dev/null 2>&1; echo $?') == '0\n'"
+  }
 }
