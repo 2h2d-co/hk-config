@@ -4,6 +4,11 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.0.3](https://github.com/2h2d-co/hk-config/compare/v0.0.2..v0.0.3) - 2026-07-13
+#### Features
+- run zizmor in pedantic mode - ([ccd9240](https://github.com/2h2d-co/hk-config/commit/ccd92406ef2459ec36a1053426bcb7904f99f6b4)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.0.2](https://github.com/2h2d-co/hk-config/releases/tag/v0.0.2) - 2026-07-07
 #### Features
 - add explicit release script - ([4e762fc](https://github.com/2h2d-co/hk-config/commit/4e762fcc4b81a2e4bfac188a5531ff24e821c122)) - Kaan Ozdokmeci
