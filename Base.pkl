@@ -28,6 +28,7 @@ baseSteps = new Mapping<String, Config.Step> {
 
   ["gitleaks"] = (Builtins.gitleaks) {
     step_condition = "exec('command -v gitleaks >/dev/null 2>&1; echo $?') == '0\n'"
+    check = "for f in {{files}}; do gitleaks dir --redact --verbose --no-banner \"$f\" || exit $?; done"
   }
   ["mise-installed"] {
     step_condition = "exec('test -f \"mise.toml\"; echo $?') == '0\n'"
