@@ -4,6 +4,11 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.0.4](https://github.com/2h2d-co/hk-config/compare/v0.0.3..v0.0.4) - 2026-07-13
+#### Features
+- audit ignored zizmor findings - ([891f9d9](https://github.com/2h2d-co/hk-config/commit/891f9d903215f6ea5c3ef1fadb2f545f9e3a5d6b)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.0.3](https://github.com/2h2d-co/hk-config/compare/v0.0.2..v0.0.3) - 2026-07-13
 #### Features
 - run zizmor in pedantic mode - ([ccd9240](https://github.com/2h2d-co/hk-config/commit/ccd92406ef2459ec36a1053426bcb7904f99f6b4)) - Kaan Ozdokmeci
