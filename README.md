@@ -47,7 +47,7 @@ If a repo uses Cocogitto and wants `release: ...` commits, configure Cocogitto t
 Prefer domain-specific tools when they exist, then add generic formatters only for files without a better owner:
 
 - `mise fmt` understands mise config locations and intended formatting. Use TOML tools such as `taplo` or `tombi` for general TOML files, not as a replacement for the mise step.
-- `actionlint` and `zizmor` understand GitHub Actions semantics. Generic YAML tools can be useful in a future `Yaml.pkl`, but they do not replace Actions-specific checks.
+- `actionlint` and `zizmor` understand GitHub Actions semantics. The shared zizmor step uses its pedantic persona. Generic YAML tools can be useful in a future `Yaml.pkl`, but they do not replace Actions-specific checks.
 - `hk validate` checks hk config semantics after Pkl evaluation. `pkl_format` is useful for formatting Pkl source, and `pkl eval` checks generic Pkl evaluation, but neither is a substitute for `hk validate` on hk config files.
 - Avoid two generic formatters owning the same file unless their output is stable together; if multiple fixers touch the same files, order them with `depends`.
 

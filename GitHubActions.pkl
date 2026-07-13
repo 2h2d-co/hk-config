@@ -4,7 +4,13 @@ import "./Base.pkl" as Base
 
 gitHubActionsSteps = new Mapping<String, Step> {
   ["actionlint"] = Base.optionalCommand("actionlint", Builtins.actionlint)
-  ["zizmor"] = Base.optionalCommand("zizmor", Builtins.zizmor)
+  ["zizmor"] = Base.optionalCommand(
+    "zizmor",
+    (Builtins.zizmor) {
+      check_diff = "zizmor --no-progress --pedantic {{ files }}"
+      fix = "zizmor --no-progress --pedantic --fix {{ files }}"
+    },
+  )
 }
 
 hooks = Base.defaultHooks(true, (Base.baseSteps) {
