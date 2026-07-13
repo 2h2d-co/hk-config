@@ -8,7 +8,7 @@ These configs are committed Pkl library modules that project repos import. They 
 
 - `Base.pkl` — general hygiene, secret-safety, and conventional commit step mappings.
 - `Python.pkl` — Python syntax/debug and optional Ruff steps.
-- `TypeScript.pkl` — optional Oxfmt, Oxlint, and TypeScript steps.
+- `TypeScript.pkl` — optional Oxfmt, Oxlint, and TypeScript steps. Oxfmt excludes Markdown and MDX so semantic hard line breaks are preserved.
 - `Go.pkl` — optional Go formatting, module, vet, vulnerability, and golangci-lint steps.
 - `GitHubActions.pkl` — optional GitHub Actions linting and security steps.
 - `Shell.pkl` — optional shfmt and ShellCheck steps for `.sh`/`.bash` files.
@@ -52,6 +52,7 @@ Prefer domain-specific tools when they exist, then add generic formatters only f
 - `actionlint` and `zizmor` understand GitHub Actions semantics. The shared zizmor step uses its pedantic persona and audits suppressed findings with `--no-ignores`. Generic YAML tools can be useful in a future `Yaml.pkl`, but they do not replace Actions-specific checks.
 - `hk validate` checks hk config semantics after Pkl evaluation. `pkl_format` is useful for formatting Pkl source, and `pkl eval` checks generic Pkl evaluation, but neither is a substitute for `hk validate` on hk config files.
 - Avoid two generic formatters owning the same file unless their output is stable together; if multiple fixers touch the same files, order them with `depends`.
+- Markdown and MDX use trailing spaces for semantic hard line breaks. The shared trailing-whitespace and Oxfmt steps exclude `*.md` and `*.mdx` files so hooks cannot silently change rendered output.
 
 ## Use from a repo
 

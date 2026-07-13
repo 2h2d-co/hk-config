@@ -3,6 +3,7 @@ import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtin
 
 typeScriptSteps = new Mapping<String, Config.Step> {
   ["oxfmt"] = (Builtins.oxfmt) {
+    exclude = List("**/*.md", "**/*.mdx")
     step_condition = "exec('command -v oxfmt >/dev/null 2>&1; echo $?') == '0\n'"
   }
   ["oxlint"] = (Builtins.ox_lint) {
