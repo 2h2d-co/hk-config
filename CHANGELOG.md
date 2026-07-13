@@ -4,6 +4,11 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.0](https://github.com/2h2d-co/hk-config/compare/v0.0.5..v0.1.0) - 2026-07-13
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) support hk 1.50.0 - ([dd23cb8](https://github.com/2h2d-co/hk-config/commit/dd23cb8b09637d668f45b4cf8ac6325e8d9ca0cb)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.0.5](https://github.com/2h2d-co/hk-config/compare/v0.0.4..v0.0.5) - 2026-07-13
 #### Features
 - centralize golangci-lint checks - ([e0142f8](https://github.com/2h2d-co/hk-config/commit/e0142f8d8d559cfa7115e674c29a36abe201b423)) - Kaan Ozdokmeci
