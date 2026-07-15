@@ -1,13 +1,14 @@
-import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Builtins.pkl"
+import "./Base.pkl" as Base
 
 shellSteps = new Mapping<String, Config.Step> {
-  ["shfmt"] = (Builtins.shfmt) {
-    step_condition = "exec('command -v shfmt >/dev/null 2>&1; echo $?') == '0\n'"
-    glob = List("**/*.sh", "**/*.bash")
+  ["shfmt"] = (Base.optionalCommand("shfmt", Builtins.shfmt)) {
+    match_any = List(
+      new Config.FileSelector { glob = List("**/*.sh", "**/*.bash") },
+    )
   }
-  ["shellcheck"] = (Builtins.shellcheck) {
-    step_condition = "exec('command -v shellcheck >/dev/null 2>&1; echo $?') == '0\n'"
+  ["shellcheck"] = (Base.optionalCommand("shellcheck", Builtins.shellcheck)) {
     depends = List("shfmt")
   }
 }

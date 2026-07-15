@@ -80,7 +80,7 @@ jobs:
           Amend hk's matching config schema and import this package:
 
           \`\`\`pkl
-          amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+          amends "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl"
           import "$PACKAGE_URI#/Base.pkl" as Base
           \`\`\`
 

@@ -1,18 +1,62 @@
-import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Builtins.pkl"
 
 // Show when conditional steps are skipped because profiles or command/file conditions do not match.
 displaySkipReasons = List("profile-not-enabled", "condition-false")
 
-commitMessageSteps = new Mapping<String, Config.Step> {
-  ["cocogitto-commit-msg"] = (Builtins.cocogitto_commit_msg) {
-    step_condition = "exec('command -v cog >/dev/null 2>&1; echo $?') == '0\n'"
+function commandExistsCondition(command: String): String =
+  "exec('command -v \(command) >/dev/null 2>&1; echo $?') == '0\n'"
+
+function commandMissingCondition(command: String): String =
+  "exec('command -v \(command) >/dev/null 2>&1; echo $?') != '0\n'"
+
+function optionalCommand(command: String, step: Config.Step): Config.Step =
+  (step) {
+    step_condition = commandExistsCondition(command)
   }
+
+function fileExistsCondition(file: String): String =
+  "exec('test -f \"\(file)\"; echo $?') == '0\n'"
+
+function whenFileExists(file: String, step: Config.Step): Config.Step =
+  (step) {
+    step_condition = fileExistsCondition(file)
+  }
+
+conventionalCommitTypes = "build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release"
+
+commitMessageSteps = new Mapping<String, Config.Step> {
+  ["cocogitto-commit-msg"] = optionalCommand("cog", Builtins.cocogitto_commit_msg)
   ["check-conventional-commit"] = (Builtins.check_conventional_commit) {
-    step_condition = "exec('command -v cog >/dev/null 2>&1; echo $?') != '0\n'"
-    check = "hk util check-conventional-commit --allowed-types=build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release \"{{commit_msg_file}}\""
+    step_condition = commandMissingCondition("cog")
+    check = "hk util check-conventional-commit --allowed-types=\(conventionalCommitTypes) \"{{commit_msg_file}}\""
   }
 }
+
+function defaultHooks(
+  autofix: Boolean,
+  projectSteps: Mapping<String, Config.Step>,
+): Mapping<String, Config.Hook> =
+  new Mapping<String, Config.Hook> {
+    ["pre-commit"] {
+      fix = autofix
+      stash = "git"
+      steps = projectSteps
+    }
+    ["pre-push"] {
+      steps = projectSteps
+    }
+    ["commit-msg"] {
+      steps = commitMessageSteps
+    }
+    ["fix"] {
+      fix = true
+      steps = projectSteps
+    }
+    ["check"] {
+      steps = projectSteps
+    }
+  }
 
 baseSteps = new Mapping<String, Config.Step> {
   ["check-added-large-files"] = Builtins.check_added_large_files
@@ -26,16 +70,14 @@ baseSteps = new Mapping<String, Config.Step> {
   ["trailing-whitespace"] = Builtins.trailing_whitespace
   ["detect-private-key"] = Builtins.detect_private_key
 
-  ["gitleaks"] = (Builtins.gitleaks) {
-    step_condition = "exec('command -v gitleaks >/dev/null 2>&1; echo $?') == '0\n'"
+  ["gitleaks"] = (optionalCommand("gitleaks", Builtins.gitleaks)) {
     check = "for f in {{files}}; do gitleaks dir --redact --verbose --no-banner \"$f\" || exit $?; done"
   }
   ["mise-installed"] {
-    step_condition = "exec('test -f \"mise.toml\"; echo $?') == '0\n'"
+    step_condition = fileExistsCondition("mise.toml")
     check = "mise --version >/dev/null 2>&1"
   }
-  ["mise"] = (Builtins.mise) {
-    step_condition = "exec('test -f \"mise.toml\"; echo $?') == '0\n'"
+  ["mise"] = (whenFileExists("mise.toml", Builtins.mise)) {
     depends = List("mise-installed")
   }
 }

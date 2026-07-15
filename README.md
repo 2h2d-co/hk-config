@@ -19,16 +19,16 @@ These configs are committed Pkl library modules that project repos import. They 
 
 ## Architecture
 
-Every project `hk.pkl` amends hk's version-matched `Config.pkl` directly. The modules in this package are regular, data-only Pkl libraries: `Base.pkl` exports shared step mappings, while stack-specific modules export additional step mappings. Project configs import the required mappings, spread them into one steps map, and assign that map to their hooks.
+Every project `hk.pkl` amends hk's version-matched `Config.pkl` directly. The modules in this package are regular Pkl libraries: `Base.pkl` exports shared helpers and step mappings, while stack-specific modules export additional step mappings. Project configs import the required mappings, spread them into one steps map, and pass that map to `Base.defaultHooks(...)`.
 
-Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. Keeping them data-only also avoids partial-import function evaluation issues in the Pkl runtime bundled with hk 1.50.0.
+Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 1.51.0 bundles pklr 1.1.3, which correctly evaluates sibling helper functions in partially imported modules.
 
 ## Conditional external tools
 
 hk conditions are `expr` strings. These configs use `step_condition` in two ways:
 
-- command-optional steps use a `step_condition` expression and skip when the executable is not on `PATH`.
-- project-file-conditioned steps use a `step_condition` expression and run when the repository contains the marker file.
+- command-optional steps use `Base.optionalCommand(...)` and skip when the executable is not on `PATH`.
+- project-file-conditioned steps use `Base.whenFileExists(...)` and run when the repository contains the marker file.
 
 The base config runs `gitleaks` opportunistically when installed and scans each hk-selected file separately. This avoids Gitleaks' `dir` behavior of falling back to a full working-directory scan when given multiple paths. When `mise.toml` exists, `mise-installed` checks that `mise` is available on every hook run, and the `mise` formatter runs when mise config files are in the hook's file set.
 
@@ -59,20 +59,20 @@ Prefer domain-specific tools when they exist, then add generic formatters only f
 Use the Pkl package artifact published with each release. The Git tag includes the `v` prefix, while the Pkl package version does not:
 
 ```text
-package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1
+package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0
 ```
 
 Every project amends hk's `Config.pkl` directly, imports the library modules it needs, and assembles its hooks:
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl"
 
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/Base.pkl" as Base
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/Python.pkl" as Python
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/TypeScript.pkl" as TypeScript
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/Go.pkl" as Go
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/GitHubActions.pkl" as GitHubActions
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/Shell.pkl" as Shell
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/Base.pkl" as Base
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/Python.pkl" as Python
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/TypeScript.pkl" as TypeScript
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/Go.pkl" as Go
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/GitHubActions.pkl" as GitHubActions
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/Shell.pkl" as Shell
 
 display_skip_reasons = Base.displaySkipReasons
 
@@ -84,46 +84,23 @@ local projectSteps = (Base.baseSteps) {
   ...Shell.shellSteps
 }
 
-hooks = new Mapping<String, Hook> {
-  ["pre-commit"] {
-    fix = true
-    stash = "git"
-    steps = projectSteps
-  }
-  ["pre-push"] {
-    steps = projectSteps
-  }
-  ["commit-msg"] {
-    steps = Base.commitMessageSteps
-  }
-  ["fix"] {
-    fix = true
-    steps = projectSteps
-  }
-  ["check"] {
-    steps = projectSteps
-  }
-}
+hooks = Base.defaultHooks(true, projectSteps)
 ```
 
-Import only the stack modules the project uses. For base-only configuration, import only `Base.pkl` and assign `Base.baseSteps` to the project hooks.
+Import only the stack modules the project uses. For base-only configuration, import only `Base.pkl` and pass `Base.baseSteps` to `Base.defaultHooks(...)`.
 
 ### Add repo-local steps
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl"
 
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/Base.pkl" as Base
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.1.1/hk-config@0.1.1#/Python.pkl" as Python
-import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/Base.pkl" as Base
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.2.0/hk-config@0.2.0#/Python.pkl" as Python
+import "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
-  ["taplo"] = (Builtins.taplo) {
-    step_condition = "exec('command -v taplo >/dev/null 2>&1; echo $?') == '0\n'"
-  }
-  ["taplo-format"] = (Builtins.taplo_format) {
-    step_condition = "exec('command -v taplo >/dev/null 2>&1; echo $?') == '0\n'"
-  }
+  ["taplo"] = Base.optionalCommand("taplo", Builtins.taplo)
+  ["taplo-format"] = Base.optionalCommand("taplo", Builtins.taplo_format)
 }
 
 local projectSteps = (Base.baseSteps) {
@@ -132,26 +109,7 @@ local projectSteps = (Base.baseSteps) {
 }
 
 display_skip_reasons = Base.displaySkipReasons
-hooks = new Mapping<String, Hook> {
-  ["pre-commit"] {
-    fix = true
-    stash = "git"
-    steps = projectSteps
-  }
-  ["pre-push"] {
-    steps = projectSteps
-  }
-  ["commit-msg"] {
-    steps = Base.commitMessageSteps
-  }
-  ["fix"] {
-    fix = true
-    steps = projectSteps
-  }
-  ["check"] {
-    steps = projectSteps
-  }
-}
+hooks = Base.defaultHooks(true, projectSteps)
 ```
 
 ## Release workflow
@@ -163,10 +121,11 @@ This repo uses Cocogitto plus an explicit release script:
 3. The script renders the unreleased range with `cog changelog`, updates and stages `CHANGELOG.md`, creates the signed `release: vX.Y.Z` commit, and creates the matching `vX.Y.Z` tag.
 4. Push `main` and the tag; `.github/workflows/release.yml` packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release with notes and pinned package examples.
 
-Downstream repos should pin imports to release packages, for example:
+Downstream repos should amend the matching hk schema and pin imports to release packages, for example:
 
 ```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl"
+import "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl" as Base
 ```
 
 ## Install hooks

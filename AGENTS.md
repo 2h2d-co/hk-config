@@ -1,6 +1,6 @@
 # hk-config Project Instructions
 
-`hk-config` is the shared hk configuration repo for 2h2d projects. Keep presets composable: project `hk.pkl` files amend hk's `Config.pkl` directly, import `Base.pkl` and stack-specific step maps, and spread them into one hooks map.
+`hk-config` is the shared hk configuration repo for 2h2d projects. Keep presets composable: project `hk.pkl` files amend hk's `Config.pkl` directly, import `Base.pkl` and stack-specific step maps, and pass the composed map to `Base.defaultHooks(...)`.
 
 ## Commit and release conventions
 
@@ -42,7 +42,7 @@ Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which packages the 
 Downstream repos should amend the matching hk `Config.pkl` and pin imports to release packages, for example:
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl"
 import "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl" as Base
 ```
 
