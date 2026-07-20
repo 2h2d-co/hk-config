@@ -71,6 +71,7 @@ baseSteps = new Mapping<String, Config.Step> {
   ["detect-private-key"] = Builtins.detect_private_key
 
   ["gitleaks"] = (optionalCommand("gitleaks", Builtins.gitleaks)) {
+    batch = true
     check = "for f in {{files}}; do gitleaks dir --redact --verbose --no-banner \"$f\" || exit $?; done"
   }
   ["mise-installed"] {
