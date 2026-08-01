@@ -42,7 +42,7 @@ Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which packages the 
 Downstream repos should amend the matching hk `Config.pkl` and pin imports to release packages, for example:
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl"
 import "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl" as Base
 ```
 
