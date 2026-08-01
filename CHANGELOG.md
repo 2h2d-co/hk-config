@@ -4,6 +4,11 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.2.2](https://github.com/2h2d-co/hk-config/compare/v0.2.1..v0.2.2) - 2026-08-01
+#### Features
+- replace Gitleaks with Betterleaks - ([b7846bb](https://github.com/2h2d-co/hk-config/commit/b7846bb4d3e954364431a3dc84bc0d823658c1f7)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.2.1](https://github.com/2h2d-co/hk-config/compare/v0.2.0..v0.2.1) - 2026-07-20
 #### Performance Improvements
 - parallelize gitleaks file scans - ([707889b](https://github.com/2h2d-co/hk-config/commit/707889b9079bf3a3334bc684299031166a758e68)) - Kaan Ozdokmeci
