@@ -30,7 +30,7 @@ hk conditions are `expr` strings. These configs use `step_condition` in two ways
 - command-optional steps use `Base.optionalCommand(...)` and skip when the executable is not on `PATH`.
 - project-file-conditioned steps use `Base.whenFileExists(...)` and run when the repository contains the marker file.
 
-The base config runs `gitleaks` opportunistically when installed and scans each hk-selected file separately in parallel batches. This avoids Gitleaks' `dir` behavior of falling back to a full working-directory scan when given multiple paths without serializing every scan. When `mise.toml` exists, `mise-installed` checks that `mise` is available on every hook run, and the `mise` formatter runs when mise config files are in the hook's file set.
+The base config runs `betterleaks` opportunistically when installed and passes each hk batch's selected files to one multi-path scan. Betterleaks scopes the scan to those paths while avoiding a separate scanner process for every file. When `mise.toml` exists, `mise-installed` checks that `mise` is available on every hook run, and the `mise` formatter runs when mise config files are in the hook's file set.
 
 ## Commit messages
 

@@ -70,10 +70,11 @@ baseSteps = new Mapping<String, Config.Step> {
   ["trailing-whitespace"] = Builtins.trailing_whitespace
   ["detect-private-key"] = Builtins.detect_private_key
 
-  ["gitleaks"] = (optionalCommand("gitleaks", Builtins.gitleaks)) {
+  ["betterleaks"] = optionalCommand("betterleaks", new Config.Step {
+    types = List("text")
     batch = true
-    check = "for f in {{files}}; do gitleaks dir --redact --verbose --no-banner \"$f\" || exit $?; done"
-  }
+    check = "betterleaks dir --redact --verbose --no-banner {{files}}"
+  })
   ["mise-installed"] {
     step_condition = fileExistsCondition("mise.toml")
     check = "mise --version >/dev/null 2>&1"
