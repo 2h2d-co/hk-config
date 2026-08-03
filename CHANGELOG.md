@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.0](https://github.com/2h2d-co/hk-config/compare/v0.3.0..v0.4.0) - 2026-08-03
+#### Features
+- enforce lightweight release tags - ([23377aa](https://github.com/2h2d-co/hk-config/commit/23377aa48f9c7c0f9263c99d583653cd003270b3)) - Kaan Ozdokmeci
+#### Documentation
+- update package examples to 0.3.0 - ([6aa6347](https://github.com/2h2d-co/hk-config/commit/6aa6347fc34366a47c0ec8eabdd0f47ef142ff6f)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.3.0](https://github.com/2h2d-co/hk-config/compare/v0.2.2..v0.3.0) - 2026-08-01
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) support hk 1.53.0 - ([25c9be6](https://github.com/2h2d-co/hk-config/commit/25c9be6a937346a2aa334993b5317e72ddaef0b9)) - Kaan Ozdokmeci
