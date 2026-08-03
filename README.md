@@ -44,6 +44,8 @@ build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release
 
 If a repo uses Cocogitto and wants `release: ...` commits, configure Cocogitto to allow that custom type in `cog.toml`. This repo's `cog.toml` allows `release: vX.Y.Z` commits and sets `tag_prefix = "v"` so release tags are `vX.Y.Z`.
 
+Release tags must be lightweight tags. Create one with `git tag vX.Y.Z`; do not use `git tag -a`, `git tag -s`, `git tag -m`, or `cog bump --annotated`. The shared pre-commit hook rejects a release tag on `HEAD` when it is annotated or signed, and the pre-push hook rejects an annotated or signed release tag before it reaches a remote.
+
 ## Tool-specific vs generic config checks
 
 Prefer domain-specific tools when they exist, then add generic formatters only for files without a better owner:
@@ -118,8 +120,8 @@ This repo uses Cocogitto plus an explicit release script:
 
 1. Create normal changes with conventional commits.
 2. Run `scripts/release.sh X.Y.Z`.
-3. The script renders the unreleased range with `cog changelog`, updates and stages `CHANGELOG.md`, creates the signed `release: vX.Y.Z` commit, and creates the matching `vX.Y.Z` tag.
-4. Push `main` and the tag; `.github/workflows/release.yml` packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release with notes and pinned package examples.
+3. The script renders the unreleased range with `cog changelog`, updates and stages `CHANGELOG.md`, creates the signed `release: vX.Y.Z` commit, and creates the matching lightweight `vX.Y.Z` tag.
+4. Push `main` and the tag explicitly with `git push origin main vX.Y.Z`; `.github/workflows/release.yml` packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release with notes and pinned package examples.
 
 Downstream repos should amend the matching hk schema and pin imports to release packages, for example:
 

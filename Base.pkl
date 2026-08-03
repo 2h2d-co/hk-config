@@ -25,6 +25,35 @@ function whenFileExists(file: String, step: Config.Step): Config.Step =
 
 conventionalCommitTypes = "build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release"
 
+lightweightReleaseTagsAtHead = new Config.Step {
+  check = #"""
+    git rev-parse --verify HEAD >/dev/null 2>&1 || exit 0
+    git for-each-ref --points-at=HEAD --format='%(refname) %(objecttype)' refs/tags |
+      while IFS=' ' read -r ref object_type; do
+        printf '%s\n' "$ref" | grep -Eq '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$' || continue
+        if [ "$object_type" != commit ]; then
+          echo "release tag ${ref#refs/tags/} must be a lightweight tag; create release tags with 'git tag <tag>' without -a, -s, or -m" >&2
+          exit 1
+        fi
+      done
+    """#
+}
+
+lightweightReleaseTagsPrePush = new Config.Step {
+  stdin = "{{ hook_stdin }}"
+  check = #"""
+    while IFS=' ' read -r _local_ref local_oid remote_ref _remote_oid; do
+      printf '%s\n' "$remote_ref" | grep -Eq '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$' || continue
+      printf '%s\n' "$local_oid" | grep -Eq '^0+$' && continue
+      object_type=$(git cat-file -t "$local_oid")
+      if [ "$object_type" != commit ]; then
+        echo "release tag ${remote_ref#refs/tags/} must be a lightweight tag; create release tags with 'git tag <tag>' without -a, -s, or -m" >&2
+        exit 1
+      fi
+    done
+    """#
+}
+
 commitMessageSteps = new Mapping<String, Config.Step> {
   ["cocogitto-commit-msg"] = optionalCommand("cog", Builtins.cocogitto_commit_msg)
   ["check-conventional-commit"] = (Builtins.check_conventional_commit) {
@@ -41,10 +70,14 @@ function defaultHooks(
     ["pre-commit"] {
       fix = autofix
       stash = "git"
-      steps = projectSteps
+      steps = (projectSteps) {
+        ["lightweight-release-tags"] = lightweightReleaseTagsAtHead
+      }
     }
     ["pre-push"] {
-      steps = projectSteps
+      steps = (projectSteps) {
+        ["lightweight-release-tags"] = lightweightReleaseTagsPrePush
+      }
     }
     ["commit-msg"] {
       steps = commitMessageSteps

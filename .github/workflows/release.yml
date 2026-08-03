@@ -43,6 +43,10 @@ jobs:
             echo "release tags must match vX.Y.Z" >&2
             exit 1
           fi
+          if [[ $(git cat-file -t "refs/tags/$GITHUB_REF_NAME") != commit ]]; then
+            echo "release tag $GITHUB_REF_NAME must be a lightweight tag" >&2
+            exit 1
+          fi
           version=${GITHUB_REF_NAME#v}
           package_uri="package://github.com/2h2d-co/hk-config/releases/download/$GITHUB_REF_NAME/hk-config@$version"
           echo "version=$version" >> "$GITHUB_OUTPUT"

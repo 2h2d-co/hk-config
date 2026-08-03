@@ -43,5 +43,10 @@ scripts/update-release-changelog.sh "$msg"
 git commit -S -m "release: $tag"
 git tag "$tag"
 
-echo "created release commit and tag $tag"
+if [[ $(git cat-file -t "refs/tags/$tag") != commit ]]; then
+	echo "release tag $tag must be a lightweight tag" >&2
+	exit 1
+fi
+
+echo "created release commit and lightweight tag $tag"
 echo "push with: git push origin main $tag"
