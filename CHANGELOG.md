@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.7.0](https://github.com/2h2d-co/hk-config/compare/v0.6.0..v0.7.0) - 2026-08-10
+#### Features
+- reject literal commit message escapes - ([acd3308](https://github.com/2h2d-co/hk-config/commit/acd33085bb117ac92af5e816a8a4ce1aa42e535c)) - Kaan Ozdokmeci
+#### Documentation
+- update package examples to 0.7.0 - ([888063b](https://github.com/2h2d-co/hk-config/commit/888063bf4f0f2e3b4746da44a8560e04ecac975b)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.6.0](https://github.com/2h2d-co/hk-config/compare/v0.5.0..v0.6.0) - 2026-08-10
 #### Features
 - provide shared config base - ([a85791f](https://github.com/2h2d-co/hk-config/commit/a85791f8e9bc41e9487a08f972d504f723e3bab8)) - Kaan Ozdokmeci
