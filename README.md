@@ -35,7 +35,9 @@ The base config runs `betterleaks` opportunistically when installed and passes e
 
 ## Commit messages
 
-`Base.pkl` provides the steps used by the `commit-msg` hook. If `cog` is available, it uses hk's `cocogitto-commit-msg` builtin and Cocogitto validates according to the repo's `cog.toml`. If `cog` is not available, it falls back to hk's `check-conventional-commit` utility with the standard Conventional Commit types plus `release`.
+`Base.pkl` provides the steps used by the `commit-msg` hook. It rejects literal escape sequences before the commit is created. Literal `\n` sequences receive specific guidance to use multiple `-m` arguments or ANSI-C shell quoting (`$'...\n...'`) for newlines; other backslash escape sequences receive a general validation error.
+
+If `cog` is available, the hook also uses hk's `cocogitto-commit-msg` builtin and Cocogitto validates according to the repo's `cog.toml`. If `cog` is not available, it falls back to hk's `check-conventional-commit` utility with the standard Conventional Commit types plus `release`.
 
 Allowed types for the fallback hk utility path:
 

@@ -25,6 +25,19 @@ function whenFileExists(file: String, step: Config.Step): Config.Step =
 
 conventionalCommitTypes = "build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release"
 
+literalEscapeSequencesInCommitMessage = new Config.Step {
+  check = #"""
+    if LC_ALL=C grep -Fq '\n' "{{commit_msg_file}}"; then
+      printf '%s\n' "commit messages must not contain literal \\n sequences; use multiple -m arguments or ANSI-C shell quoting (\$'...\\n...') for newlines" >&2
+      exit 1
+    fi
+    if LC_ALL=C grep -Eq '\\.' "{{commit_msg_file}}"; then
+      printf '%s\n' 'commit messages must not contain literal escape sequences; use the intended characters instead' >&2
+      exit 1
+    fi
+    """#
+}
+
 lightweightReleaseTagsAtHead = new Config.Step {
   check = #"""
     git rev-parse --verify HEAD >/dev/null 2>&1 || exit 0
@@ -55,6 +68,7 @@ lightweightReleaseTagsPrePush = new Config.Step {
 }
 
 commitMessageSteps = new Mapping<String, Config.Step> {
+  ["literal-escape-sequences"] = literalEscapeSequencesInCommitMessage
   ["cocogitto-commit-msg"] = optionalCommand("cog", Builtins.cocogitto_commit_msg)
   ["check-conventional-commit"] = (Builtins.check_conventional_commit) {
     step_condition = commandMissingCondition("cog")
