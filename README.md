@@ -21,7 +21,7 @@ These configs are committed Pkl library modules that project repos import. They 
 
 Every project `hk.pkl` amends hk's version-matched `Config.pkl` directly. The modules in this package are regular Pkl libraries: `Base.pkl` exports shared helpers and step mappings, while stack-specific modules export additional step mappings. Project configs import the required mappings, spread them into one steps map, and pass that map to `Base.defaultHooks(...)`.
 
-Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 1.53.0 correctly evaluates sibling helper functions in partially imported modules.
+Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 1.54.1 correctly evaluates sibling helper functions in partially imported modules.
 
 ## Conditional external tools
 
@@ -61,22 +61,23 @@ Prefer domain-specific tools when they exist, then add generic formatters only f
 Use the Pkl package artifact published with each release. The Git tag includes the `v` prefix, while the Pkl package version does not:
 
 ```text
-package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0
+package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0
 ```
 
 Every project amends hk's `Config.pkl` directly, imports the library modules it needs, and assembles its hooks:
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
 
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/Base.pkl" as Base
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/Python.pkl" as Python
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/TypeScript.pkl" as TypeScript
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/Go.pkl" as Go
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/GitHubActions.pkl" as GitHubActions
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/Shell.pkl" as Shell
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/Base.pkl" as Base
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/Python.pkl" as Python
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/TypeScript.pkl" as TypeScript
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/Go.pkl" as Go
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/GitHubActions.pkl" as GitHubActions
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/Shell.pkl" as Shell
 
 display_skip_reasons = Base.displaySkipReasons
+min_hk_version = "1.54.1"
 
 local projectSteps = (Base.baseSteps) {
   ...Python.pythonSteps
@@ -94,11 +95,11 @@ Import only the stack modules the project uses. For base-only configuration, imp
 ### Add repo-local steps
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
 
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/Base.pkl" as Base
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.4.0/hk-config@0.4.0#/Python.pkl" as Python
-import "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Builtins.pkl"
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/Base.pkl" as Base
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.5.0/hk-config@0.5.0#/Python.pkl" as Python
+import "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
   ["taplo"] = Base.optionalCommand("taplo", Builtins.taplo)
@@ -111,6 +112,7 @@ local projectSteps = (Base.baseSteps) {
 }
 
 display_skip_reasons = Base.displaySkipReasons
+min_hk_version = "1.54.1"
 hooks = Base.defaultHooks(true, projectSteps)
 ```
 
@@ -126,8 +128,9 @@ This repo uses Cocogitto plus an explicit release script:
 Downstream repos should amend the matching hk schema and pin imports to release packages, for example:
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
 import "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl" as Base
+min_hk_version = "1.54.1"
 ```
 
 ## Install hooks

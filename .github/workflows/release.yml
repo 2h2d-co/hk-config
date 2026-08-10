@@ -84,8 +84,9 @@ jobs:
           Amend hk's matching config schema and import this package:
 
           \`\`\`pkl
-          amends "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl"
+          amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
           import "$PACKAGE_URI#/Base.pkl" as Base
+          min_hk_version = "1.54.1"
           \`\`\`
 
           Import additional step libraries from the same package, e.g.:

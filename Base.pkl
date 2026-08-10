@@ -1,5 +1,5 @@
-import "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Builtins.pkl"
 
 // Show when conditional steps are skipped because profiles or command/file conditions do not match.
 displaySkipReasons = List("profile-not-enabled", "condition-false")
