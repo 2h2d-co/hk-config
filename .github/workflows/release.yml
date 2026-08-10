@@ -8,38 +8,40 @@ on:
 permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: pkl-release
+  cancel-in-progress: false
 
 jobs:
-  github-release:
-    name: GitHub Release
+  build:
+    name: Build Pkl package
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Required to create GitHub releases and upload package assets.
-      id-token: write # Required to mint the OIDC token used to sign artifact attestations.
-      attestations: write # Required to persist GitHub artifact attestations.
+      contents: read
+    outputs:
+      artifact-digest: ${{ steps.upload.outputs.artifact-digest }}
+      artifact-id: ${{ steps.upload.outputs.artifact-id }}
+      version: ${{ steps.release.outputs.version }}
     steps:
-      - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Check out release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
+          ref: ${{ github.sha }}
 
-      - name: Install mise tools
+      - name: Install tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
         with:
           version: "2026.6.14"
-          install: true
-          install_args: --locked pkl
+          install_args: --locked
           cache: false
 
-      - name: Validate release tag
+      - name: Validate release commit
         id: release
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          if [[ ! $GITHUB_REF_NAME =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "release tags must match vX.Y.Z" >&2
             exit 1
           fi
@@ -47,72 +49,212 @@ jobs:
             echo "release tag $GITHUB_REF_NAME must be a lightweight tag" >&2
             exit 1
           fi
+          tag_commit=$(git rev-parse "refs/tags/$GITHUB_REF_NAME^{commit}")
+          if [[ $tag_commit != "$GITHUB_SHA" ]]; then
+            echo "release tag $GITHUB_REF_NAME does not point to workflow commit $GITHUB_SHA" >&2
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$tag_commit" origin/main; then
+            echo "release tag $GITHUB_REF_NAME does not point to a commit on origin/main" >&2
+            exit 1
+          fi
+          subject=$(git log -1 --pretty=%s "$tag_commit")
+          if [[ $subject != "release: $GITHUB_REF_NAME" ]]; then
+            echo "release commit subject $subject does not match release: $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+          git -c gpg.format=ssh \
+            -c gpg.ssh.allowedSignersFile="$GITHUB_WORKSPACE/.github/release-signers" \
+            verify-commit "$tag_commit"
+          expected_digest=$(git log -1 \
+            --format='%(trailers:key=Release-Manifest-SHA256,valueonly)' \
+            "$tag_commit")
+          if [[ ! $expected_digest =~ ^[0-9a-f]{64}$ ]]; then
+            echo "release commit is missing a valid Release-Manifest-SHA256 trailer" >&2
+            exit 1
+          fi
           version=${GITHUB_REF_NAME#v}
-          package_uri="package://github.com/2h2d-co/hk-config/releases/download/$GITHUB_REF_NAME/hk-config@$version"
+          if ! grep -Eq "^## \\[$GITHUB_REF_NAME\\](\\([^)]*\\))? - [0-9]{4}-[0-9]{2}-[0-9]{2}$" CHANGELOG.md; then
+            echo "CHANGELOG.md has no dated $GITHUB_REF_NAME release section" >&2
+            exit 1
+          fi
+          echo "expected-digest=$expected_digest" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "package_uri=$package_uri" >> "$GITHUB_OUTPUT"
 
-      - name: Package Pkl release artifacts
+      - name: Run checks
+        run: hk check --all --check
+
+      - name: Build release artifacts
         shell: bash
         env:
-          HK_CONFIG_VERSION: ${{ steps.release.outputs.version }}
+          EXPECTED_DIGEST: ${{ steps.release.outputs.expected-digest }}
+          VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
-          rm -rf dist
-          pkl project package --skip-publish-check --output-path dist .
-
-      - name: Attest Pkl package artifacts
-        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
-        with:
-          subject-path: |
-            dist/hk-config@${{ steps.release.outputs.version }}
-            dist/hk-config@${{ steps.release.outputs.version }}.sha256
-            dist/hk-config@${{ steps.release.outputs.version }}.zip
-            dist/hk-config@${{ steps.release.outputs.version }}.zip.sha256
+          test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}"
+          test -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}"
+          scripts/package-release.sh "$VERSION" dist
+          actual_digest=$(shasum -a 256 dist/release-manifest.sha256 | awk '{print $1}')
+          if [[ $actual_digest != "$EXPECTED_DIGEST" ]]; then
+            echo "release manifest digest $actual_digest does not match signed digest $EXPECTED_DIGEST" >&2
+            exit 1
+          fi
 
       - name: Prepare release notes
         shell: bash
         env:
-          PACKAGE_URI: ${{ steps.release.outputs.package_uri }}
+          VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
-          scripts/extract-release-notes.sh "$GITHUB_REF_NAME" > release-notes.md
-          cat >> release-notes.md <<EOF
+          package_uri="package://github.com/2h2d-co/hk-config/releases/download/$GITHUB_REF_NAME/hk-config@$VERSION"
+          scripts/extract-release-notes.sh "$GITHUB_REF_NAME" > dist/release-notes.md
+          cat >> dist/release-notes.md <<EOF
 
           ## Use this release
 
           Amend this package's shared config and import its libraries:
 
           \`\`\`pkl
-          amends "$PACKAGE_URI#/Config.pkl"
-          import "$PACKAGE_URI#/Base.pkl" as Base
+          amends "$package_uri#/Config.pkl"
+          import "$package_uri#/Base.pkl" as Base
           \`\`\`
 
           Import additional step libraries from the same package, e.g.:
 
           \`\`\`pkl
-          import "$PACKAGE_URI#/Python.pkl" as Python
+          import "$package_uri#/Python.pkl" as Python
           \`\`\`
           EOF
+
+      - name: Upload release artifacts
+        id: upload
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pkl-release-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/hk-config@${{ steps.release.outputs.version }}
+            dist/hk-config@${{ steps.release.outputs.version }}.sha256
+            dist/hk-config@${{ steps.release.outputs.version }}.zip
+            dist/hk-config@${{ steps.release.outputs.version }}.zip.sha256
+            dist/release-manifest.sha256
+            dist/release-notes.md
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Publish Pkl package
+    needs: build
+    runs-on: ubuntu-latest
+    environment: github-release
+    permissions:
+      attestations: write # Required to persist release artifact attestations.
+      contents: write # Required to create the GitHub release.
+      id-token: write # Required for artifact attestation signing.
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          path: release-artifacts
+
+      - name: Revalidate release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version=${GITHUB_REF_NAME#v}
+          tag_type=$(gh api \
+            "repos/$GITHUB_REPOSITORY/git/ref/tags/$GITHUB_REF_NAME" \
+            --jq .object.type)
+          tag_sha=$(gh api \
+            "repos/$GITHUB_REPOSITORY/git/ref/tags/$GITHUB_REF_NAME" \
+            --jq .object.sha)
+          main_sha=$(gh api \
+            "repos/$GITHUB_REPOSITORY/git/ref/heads/main" \
+            --jq .object.sha)
+          if [[ $tag_type != commit || $tag_sha != "$GITHUB_SHA" ]]; then
+            echo "release tag $GITHUB_REF_NAME no longer points to workflow commit $GITHUB_SHA" >&2
+            exit 1
+          fi
+          comparison=$(gh api \
+            "repos/$GITHUB_REPOSITORY/compare/$tag_sha...$main_sha" \
+            --jq .status)
+          if [[ $comparison != identical && $comparison != ahead ]]; then
+            echo "release commit $tag_sha is no longer an ancestor of main" >&2
+            exit 1
+          fi
+          commit=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$tag_sha")
+          verified=$(jq -r .verification.verified <<< "$commit")
+          message=$(jq -r .message <<< "$commit")
+          subject=${message%%$'\n'*}
+          expected_digest=$(sed -n 's/^Release-Manifest-SHA256: //p' <<< "$message")
+          if [[ $verified != true || $subject != "release: $GITHUB_REF_NAME" ]]; then
+            echo "GitHub does not recognize the expected signed release commit" >&2
+            exit 1
+          fi
+          if [[ ! $expected_digest =~ ^[0-9a-f]{64}$ ]]; then
+            echo "release commit is missing a valid Release-Manifest-SHA256 trailer" >&2
+            exit 1
+          fi
+
+          cd release-artifacts
+          expected_files=$(printf '%s\n' \
+            "hk-config@$version" \
+            "hk-config@$version.sha256" \
+            "hk-config@$version.zip" \
+            "hk-config@$version.zip.sha256" \
+            "release-manifest.sha256" \
+            "release-notes.md")
+          actual_files=$(find . -maxdepth 1 -type f -print | sed 's|^\./||' | LC_ALL=C sort)
+          if [[ $actual_files != "$expected_files" ]]; then
+            echo "release artifact contains unexpected files" >&2
+            diff -u <(printf '%s\n' "$expected_files") <(printf '%s\n' "$actual_files") || true
+            exit 1
+          fi
+          actual_digest=$(shasum -a 256 release-manifest.sha256 | awk '{print $1}')
+          if [[ $actual_digest != "$expected_digest" ]]; then
+            echo "release manifest digest $actual_digest does not match signed digest $expected_digest" >&2
+            exit 1
+          fi
+          shasum -a 256 -c release-manifest.sha256
+          package_digest=$(shasum -a 256 "hk-config@$version" | awk '{print $1}')
+          zip_digest=$(shasum -a 256 "hk-config@$version.zip" | awk '{print $1}')
+          if [[ $(< "hk-config@$version.sha256") != "$package_digest" ]]; then
+            echo "Pkl package checksum file does not match its artifact" >&2
+            exit 1
+          fi
+          if [[ $(< "hk-config@$version.zip.sha256") != "$zip_digest" ]]; then
+            echo "Pkl ZIP checksum file does not match its artifact" >&2
+            exit 1
+          fi
+
+      - name: Attest release artifacts
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: |
+            release-artifacts/hk-config@${{ needs.build.outputs.version }}
+            release-artifacts/hk-config@${{ needs.build.outputs.version }}.sha256
+            release-artifacts/hk-config@${{ needs.build.outputs.version }}.zip
+            release-artifacts/hk-config@${{ needs.build.outputs.version }}.zip.sha256
+            release-artifacts/release-manifest.sha256
 
       - name: Create GitHub release
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.release.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          version=${GITHUB_REF_NAME#v}
           assets=(
-            "dist/hk-config@$VERSION"
-            "dist/hk-config@$VERSION.sha256"
-            "dist/hk-config@$VERSION.zip"
-            "dist/hk-config@$VERSION.zip.sha256"
+            "release-artifacts/hk-config@$version"
+            "release-artifacts/hk-config@$version.sha256"
+            "release-artifacts/hk-config@$version.zip"
+            "release-artifacts/hk-config@$version.zip.sha256"
+            "release-artifacts/release-manifest.sha256"
           )
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            echo "release $GITHUB_REF_NAME already exists; releases are immutable" >&2
-            exit 1
-          fi
           gh release create "$GITHUB_REF_NAME" "${assets[@]}" \
+            --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" \
-            --notes-file release-notes.md \
+            --notes-file release-artifacts/release-notes.md \
             --verify-tag

@@ -27,17 +27,23 @@
    scripts/release.sh X.Y.Z
    ```
 
-   The release script uses `cog changelog` to render the unreleased range, updates and stages `CHANGELOG.md`, creates the signed `release: vX.Y.Z` commit, and creates the matching lightweight `vX.Y.Z` tag.
+   The release script uses `cog changelog` to render the unreleased range, updates and stages
+   `CHANGELOG.md`, reproducibly packages every Pkl release asset, records the canonical release
+   manifest digest in the signed `release: vX.Y.Z` commit, rebuilds the committed tree, and creates
+   the matching lightweight `vX.Y.Z` tag.
 
 4. Push the release commit and tag:
 
    ```sh
-   git push origin main vX.Y.Z
+   git push --atomic origin main vX.Y.Z
    ```
 
 ## GitHub releases and downstream imports
 
-Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release from the matching `CHANGELOG.md` section.
+Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`. A read-only job packages the Pkl
+modules and must reproduce the manifest digest authorized by the signed release commit. A separate
+credentialed job revalidates the protected tag, signature, ancestry, and exact transferred assets
+before generating GitHub Artifact Attestations and creating the GitHub Release.
 
 Downstream repos should amend this package's `Config.pkl` and pin imports to the same release package, for example:
 

@@ -123,8 +123,12 @@ This repo uses Cocogitto plus an explicit release script:
 
 1. Create normal changes with conventional commits.
 2. Run `scripts/release.sh X.Y.Z`.
-3. The script renders the unreleased range with `cog changelog`, updates and stages `CHANGELOG.md`, creates the signed `release: vX.Y.Z` commit, and creates the matching lightweight `vX.Y.Z` tag.
-4. Push `main` and the tag explicitly with `git push origin main vX.Y.Z`; `.github/workflows/release.yml` packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release with notes and pinned package examples.
+3. The script renders the unreleased range with `cog changelog`, updates and stages `CHANGELOG.md`,
+   reproducibly builds the Pkl assets, records their canonical manifest digest in the signed
+   `release: vX.Y.Z` commit, rebuilds the committed tree, and creates the matching lightweight tag.
+4. Push `main` and the tag atomically with `git push --atomic origin main vX.Y.Z`. A read-only
+   workflow job reproduces the signed assets; a separate credentialed job verifies, attests, and
+   publishes those exact files with notes and pinned package examples.
 
 Downstream repos should amend the shared config and pin imports to the same release package, for example:
 
