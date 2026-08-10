@@ -4,6 +4,11 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.6.0](https://github.com/2h2d-co/hk-config/compare/v0.5.0..v0.6.0) - 2026-08-10
+#### Features
+- provide shared config base - ([a85791f](https://github.com/2h2d-co/hk-config/commit/a85791f8e9bc41e9487a08f972d504f723e3bab8)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.5.0](https://github.com/2h2d-co/hk-config/compare/v0.4.0..v0.5.0) - 2026-08-10
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) support hk 1.54.1 - ([04b18b6](https://github.com/2h2d-co/hk-config/commit/04b18b64c5684b60be95f55406cb98e4a79489f2)) - Kaan Ozdokmeci
