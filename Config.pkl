@@ -1,0 +1,3 @@
+amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
+
+min_hk_version = "1.54.1"

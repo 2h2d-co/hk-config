@@ -1,6 +1,6 @@
 # hk-config Project Instructions
 
-`hk-config` is the shared hk configuration repo for 2h2d projects. Keep presets composable: project `hk.pkl` files amend hk's `Config.pkl` directly, import `Base.pkl` and stack-specific step maps, and pass the composed map to `Base.defaultHooks(...)`.
+`hk-config` is the shared hk configuration repo for 2h2d projects. Keep presets composable: project `hk.pkl` files amend this package's `Config.pkl`, import `Base.pkl` and stack-specific step maps, and pass the composed map to `Base.defaultHooks(...)`.
 
 ## Commit and release conventions
 
@@ -39,15 +39,14 @@
 
 Pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which packages the Pkl modules, generates GitHub Artifact Attestations for the release assets, and creates the immutable GitHub Release from the matching `CHANGELOG.md` section.
 
-Downstream repos should amend the matching hk `Config.pkl` and pin imports to release packages, for example:
+Downstream repos should amend this package's `Config.pkl` and pin imports to the same release package, for example:
 
 ```pkl
-amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
+amends "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Config.pkl"
 import "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-config@X.Y.Z#/Base.pkl" as Base
-min_hk_version = "1.54.1"
 ```
 
-Use the same package version for every imported library module.
+`Config.pkl` amends the matching hk schema and sets `min_hk_version`. Use the same package version for the amended config and every imported library module.
 
 ## Validation
 

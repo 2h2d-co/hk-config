@@ -1,4 +1,4 @@
-amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
+amends "./Config.pkl"
 
 import "./Base.pkl" as Base
 import "./GitHubActions.pkl" as GitHubActions
@@ -18,5 +18,4 @@ local projectSteps = (Base.baseSteps) {
 }
 
 display_skip_reasons = Base.displaySkipReasons
-min_hk_version = "1.54.1"
 hooks = Base.defaultHooks(true, projectSteps)
