@@ -5,10 +5,10 @@ minimum_release_age = "7d"
 
 [tools]
 hk = { version = "1.54.1", postinstall = "hk install --mise" }
-pkl = "latest"
-betterleaks = "latest"
-cocogitto = "latest"
-zizmor = "latest"
-actionlint = "latest"
-shfmt = "latest"
-shellcheck = "latest"
+pkl = "0.32.1"
+betterleaks = "1.7.3"
+cocogitto = "7.0.0"
+zizmor = "1.29.0"
+actionlint = "1.7.12"
+shfmt = "3.13.1"
+shellcheck = "0.11.0"
