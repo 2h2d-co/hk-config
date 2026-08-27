@@ -4,6 +4,23 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.8.0](https://github.com/2h2d-co/hk-config/compare/v0.7.0..v0.8.0) - 2026-08-27
+#### Features
+- require hk 1.56 - ([93d29c5](https://github.com/2h2d-co/hk-config/commit/93d29c5838c6a8d1507c7f61ab2775247af09d2e)) - Kaan Ozdokmeci
+#### Continuous Integration
+- validate shared configuration continuously - ([d4dc9ac](https://github.com/2h2d-co/hk-config/commit/d4dc9ac8feae9b067a7116eb2cce51f9c0e117c6)) - Kaan Ozdokmeci
+- pin mise to 2026.8.2 - ([8581fa4](https://github.com/2h2d-co/hk-config/commit/8581fa4e27671a697c7e73f008f00a7c684bec46)) - Kaan Ozdokmeci
+- harden Pkl releases - ([278858b](https://github.com/2h2d-co/hk-config/commit/278858bfc8a6b85689854e5faef29cd35f615604)) - Kaan Ozdokmeci
+#### Miscellaneous Chores
+- (**deps**) bump jdx/mise-action from 4.2.4 to 4.2.5 (#2) - ([211cbcc](https://github.com/2h2d-co/hk-config/commit/211cbcc6d8ab0a938778a8db7c4c375c3dba16c5)) - dependabot[bot], dependabot[bot]
+- (**deps**) enforce seven-day cooldown - ([79f4fc4](https://github.com/2h2d-co/hk-config/commit/79f4fc40d9ac58f74526084572d31e2900cd0073)) - Kaan Ozdokmeci
+- (**deps**) align dependency update policy - ([3fd34f3](https://github.com/2h2d-co/hk-config/commit/3fd34f3d144a06aee2341b980bacf4a7d7d268a1)) - Kaan Ozdokmeci
+- (**deps**) configure dependency updates - ([73a8099](https://github.com/2h2d-co/hk-config/commit/73a80996ffef3229095c5c72884c8e856293dfbe)) - Kaan Ozdokmeci
+- (**security**) rotate release signing key - ([2b419b8](https://github.com/2h2d-co/hk-config/commit/2b419b878aed17406135a607638b1161b0890a07)) - Kaan Ozdokmeci
+- upgrade mise lockfile format - ([85d1427](https://github.com/2h2d-co/hk-config/commit/85d1427a2f2e7ed89015196f2001fa7918a9a100)) - Kaan Ozdokmeci
+- pin and update mise toolchain - ([17ebb8b](https://github.com/2h2d-co/hk-config/commit/17ebb8b6272a481322313a28e055309e24ad647e)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.7.0](https://github.com/2h2d-co/hk-config/compare/v0.6.0..v0.7.0) - 2026-08-10
 #### Features
 - reject literal commit message escapes - ([acd3308](https://github.com/2h2d-co/hk-config/commit/acd33085bb117ac92af5e816a8a4ce1aa42e535c)) - Kaan Ozdokmeci
