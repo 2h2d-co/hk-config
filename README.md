@@ -33,6 +33,8 @@ hk conditions are `expr` strings. These configs use `step_condition` in two ways
 
 The base config runs `betterleaks` opportunistically when installed and passes each hk batch's selected files to one multi-path scan. Betterleaks scopes the scan to those paths while avoiding a separate scanner process for every file. When `mise.toml` exists, `mise-installed` checks that `mise` is available on every hook run, and the `mise` formatter runs when mise config files are in the hook's file set.
 
+The Go vulnerability step runs `go tool govulncheck ./...` from each module workspace. Go projects that import `Go.pkl` must declare `golang.org/x/vuln/cmd/govulncheck` as a Go tool dependency so its version and checksums remain in `go.mod` and `go.sum`.
+
 ## Commit messages
 
 `Base.pkl` provides the steps used by the `commit-msg` hook. It rejects literal escape sequences before the commit is created. Literal `\n` sequences receive specific guidance to use multiple `-m` arguments or ANSI-C shell quoting (`$'...\n...'`) for newlines; other backslash escape sequences receive a general validation error.

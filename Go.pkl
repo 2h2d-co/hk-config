@@ -14,7 +14,14 @@ goSteps = new Mapping<String, Config.Step> {
   ["golangci-lint"] = (Base.optionalCommand("golangci-lint", Builtins.golangci_lint)) {
     depends = List("go-fmt", "gomod-tidy")
   }
-  ["go-vuln-check"] = (Base.optionalCommand("govulncheck", Builtins.go_vuln_check)) {
+  ["go-vuln-check"] = new Config.Step {
+    glob = "**/*.go"
+    workspace_indicator = "go.mod"
+    step_condition = Base.commandExistsCondition("go")
     depends = List("go-vet")
+    check = new Config.CommandSpec {
+      command = "cd {{workspace}} && go tool govulncheck ./..."
+      effect = "write"
+    }
   }
 }
