@@ -66,20 +66,20 @@ Prefer domain-specific tools when they exist, then add generic formatters only f
 Use the Pkl package artifact published with each release. The Git tag includes the `v` prefix, while the Pkl package version does not:
 
 ```text
-package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0
+package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0
 ```
 
 Every project amends this package's `Config.pkl`, imports the library modules it needs from the same package version, and assembles its hooks:
 
 ```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Config.pkl"
+amends "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Config.pkl"
 
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Base.pkl" as Base
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Python.pkl" as Python
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/TypeScript.pkl" as TypeScript
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Go.pkl" as Go
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/GitHubActions.pkl" as GitHubActions
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Shell.pkl" as Shell
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Base.pkl" as Base
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Python.pkl" as Python
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/TypeScript.pkl" as TypeScript
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Go.pkl" as Go
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/GitHubActions.pkl" as GitHubActions
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Shell.pkl" as Shell
 
 display_skip_reasons = Base.displaySkipReasons
 
@@ -99,10 +99,10 @@ Import only the stack modules the project uses. For base-only configuration, imp
 ### Add repo-local steps
 
 ```pkl
-amends "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Config.pkl"
+amends "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Config.pkl"
 
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Base.pkl" as Base
-import "package://github.com/2h2d-co/hk-config/releases/download/v0.8.0/hk-config@0.8.0#/Python.pkl" as Python
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Base.pkl" as Base
+import "package://github.com/2h2d-co/hk-config/releases/download/v0.9.0/hk-config@0.9.0#/Python.pkl" as Python
 import "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
