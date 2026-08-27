@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.9.0](https://github.com/2h2d-co/hk-config/compare/v0.8.0..v0.9.0) - 2026-08-27
+#### Features
+- run govulncheck as a Go tool - ([9a4c4de](https://github.com/2h2d-co/hk-config/commit/9a4c4deaf35db524472fcb516dfadfafd3f1548a)) - Kaan Ozdokmeci
+#### Bug Fixes
+- enforce govulncheck tool declaration - ([d1db96a](https://github.com/2h2d-co/hk-config/commit/d1db96a86eb862609dd82a0c1e5f2b6f74f04d3c)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.8.0](https://github.com/2h2d-co/hk-config/compare/v0.7.0..v0.8.0) - 2026-08-27
 #### Features
 - require hk 1.56 - ([93d29c5](https://github.com/2h2d-co/hk-config/commit/93d29c5838c6a8d1507c7f61ab2775247af09d2e)) - Kaan Ozdokmeci
