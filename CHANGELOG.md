@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.11.0](https://github.com/2h2d-co/hk-config/compare/v0.10.0..v0.11.0) - 2026-09-25
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.0.1 - ([f683491](https://github.com/2h2d-co/hk-config/commit/f68349110339fe31d32886cf43b31b1f6ee6dd07)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.10.0 - ([a2b8c1f](https://github.com/2h2d-co/hk-config/commit/a2b8c1f777d5721611a0f5b8333b777ce808ae5f)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.10.0](https://github.com/2h2d-co/hk-config/compare/v0.9.0..v0.10.0) - 2026-09-25
 #### Bug Fixes
 - apply repository Betterleaks config to file scans - ([9d7897c](https://github.com/2h2d-co/hk-config/commit/9d7897c54f78939e4f004f8e6a03df6e79b1d708)) - Kaan Ozdokmeci
