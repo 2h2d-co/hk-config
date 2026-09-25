@@ -22,7 +22,7 @@ These configs are committed Pkl library modules that project repos import. They 
 
 Every project `hk.pkl` amends this package's `Config.pkl`, which amends hk's version-matched schema and sets `min_hk_version`. The remaining modules are regular Pkl libraries: `Base.pkl` exports shared helpers and step mappings, while stack-specific modules export additional step mappings. Project configs import the required mappings, spread them into one steps map, and pass that map to `Base.defaultHooks(...)`.
 
-Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 1.56.0 correctly evaluates sibling helper functions in partially imported modules.
+Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 2.0.1 correctly evaluates sibling helper functions in partially imported modules.
 
 ## Conditional external tools
 
@@ -98,6 +98,10 @@ local projectSteps = (Base.baseSteps) {
 hooks = Base.defaultHooks(true, projectSteps)
 ```
 
+`Base.defaultHooks(...)` declares the `pre-commit`, `pre-push`, `commit-msg`, `fix`, and `check` hooks. Under hk 2, `pre-commit` stages the fixes it applies, while `hk fix` leaves fixes unstaged.
+
+The package requires hk 2.0.1 or newer. Pin `hk = "2.0.1"` in the project's `mise.toml`. The mise registry installs hk 2 through the `packslip` backend, which needs mise 2026.9.2 or newer, including the mise version pinned in CI. Lock every platform the project runs on, for example `mise lock --platform linux-x64,linux-arm64,macos-arm64`.
+
 Import only the stack modules the project uses. For base-only configuration, import only `Base.pkl` and pass `Base.baseSteps` to `Base.defaultHooks(...)`.
 
 ### Add repo-local steps
@@ -107,7 +111,7 @@ amends "package://github.com/2h2d-co/hk-config/releases/download/v0.10.0/hk-conf
 
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.10.0/hk-config@0.10.0#/Base.pkl" as Base
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.10.0/hk-config@0.10.0#/Python.pkl" as Python
-import "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
   ["taplo"] = Base.optionalCommand("taplo", Builtins.taplo)
