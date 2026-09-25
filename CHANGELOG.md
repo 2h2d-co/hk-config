@@ -4,6 +4,15 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.10.0](https://github.com/2h2d-co/hk-config/compare/v0.9.0..v0.10.0) - 2026-09-25
+#### Bug Fixes
+- apply repository Betterleaks config to file scans - ([9d7897c](https://github.com/2h2d-co/hk-config/commit/9d7897c54f78939e4f004f8e6a03df6e79b1d708)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.9.0 - ([b3e9b62](https://github.com/2h2d-co/hk-config/commit/b3e9b62ea27b44abe3b550b386f1fab082be687d)) - Kaan Ozdokmeci
+#### Continuous Integration
+- (**dependabot**) use conventional commits for action updates - ([8bf069d](https://github.com/2h2d-co/hk-config/commit/8bf069de2a1ac51dd9af05b44be3897b7e70eb5f)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.9.0](https://github.com/2h2d-co/hk-config/compare/v0.8.0..v0.9.0) - 2026-08-27
 #### Features
 - run govulncheck as a Go tool - ([9a4c4de](https://github.com/2h2d-co/hk-config/commit/9a4c4deaf35db524472fcb516dfadfafd3f1548a)) - Kaan Ozdokmeci
