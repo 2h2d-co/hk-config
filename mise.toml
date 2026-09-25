@@ -12,3 +12,17 @@ zizmor = "1.29.0"
 actionlint = "1.7.12"
 shfmt = "3.13.1"
 shellcheck = "0.11.0"
+
+[tasks.check]
+description = "Run all non-writing project checks"
+run = [
+  "hk validate",
+  "hk check --all --check",
+  """
+#!/usr/bin/env bash
+set -euo pipefail
+package_dir="$(mktemp -d)"
+trap 'rm -rf "$package_dir"' EXIT
+HK_CONFIG_VERSION=0.0.0 pkl project package --skip-publish-check --output-path "$package_dir" . >/dev/null
+""",
+]

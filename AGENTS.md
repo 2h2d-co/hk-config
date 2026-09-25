@@ -59,12 +59,10 @@ import "package://github.com/2h2d-co/hk-config/releases/download/vX.Y.Z/hk-confi
 Before handing off changes, run:
 
 ```sh
-hk validate
-hk check --all --check
-tmp=$(mktemp -d)
-HK_CONFIG_VERSION=0.0.0 pkl project package --skip-publish-check --output-path "$tmp" .
-rm -rf "$tmp"
+mise run check
 ```
+
+It runs `hk validate`, `hk check --all --check`, and a Pkl package build into a temporary directory.
 
 Library modules are validated with `pkl eval`; only the project `hk.pkl` is an hk configuration module. For GitHub Actions changes, also evaluate the library directly:
 
