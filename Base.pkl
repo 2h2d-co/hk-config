@@ -120,7 +120,17 @@ baseSteps = new Mapping<String, Config.Step> {
   ["betterleaks"] = optionalCommand("betterleaks", new Config.Step {
     types = List("text")
     batch = true
-    check = "betterleaks dir --redact --verbose --no-banner {{files}}"
+    check = #"""
+      if [ -z "${BETTERLEAKS_CONFIG:-}${GITLEAKS_CONFIG:-}${BETTERLEAKS_CONFIG_TOML:-}${GITLEAKS_CONFIG_TOML:-}" ]; then
+        for config in .betterleaks.toml .gitleaks.toml; do
+          if [ -f "$config" ]; then
+            export BETTERLEAKS_CONFIG="$config"
+            break
+          fi
+        done
+      fi
+      betterleaks dir --redact --verbose --no-banner {{files}}
+      """#
   })
   ["mise-installed"] {
     step_condition = fileExistsCondition("mise.toml")

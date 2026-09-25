@@ -31,7 +31,11 @@ hk conditions are `expr` strings. These configs use `step_condition` in two ways
 - command-optional steps use `Base.optionalCommand(...)` and skip when the executable is not on `PATH`.
 - project-file-conditioned steps use `Base.whenFileExists(...)` and run when the repository contains the marker file.
 
-The base config runs `betterleaks` opportunistically when installed and passes each hk batch's selected files to one multi-path scan. Betterleaks scopes the scan to those paths while avoiding a separate scanner process for every file. When `mise.toml` exists, `mise-installed` checks that `mise` is available on every hook run, and the `mise` formatter runs when mise config files are in the hook's file set.
+The base config runs `betterleaks` opportunistically when installed and passes each hk batch's selected files to one multi-path scan. Betterleaks scopes the scan to those paths while avoiding a separate scanner process for every file.
+
+Betterleaks only discovers `.betterleaks.toml` or `.gitleaks.toml` when its scan target is a directory, so it would apply its default rules to these file paths. The step therefore uses the first of `.betterleaks.toml` or `.gitleaks.toml` found at the repository root as `BETTERLEAKS_CONFIG`. This is the same file order Betterleaks uses. A config already set through `BETTERLEAKS_CONFIG`, `GITLEAKS_CONFIG`, `BETTERLEAKS_CONFIG_TOML`, or `GITLEAKS_CONFIG_TOML` takes precedence. Repositories without a config file use the default rules. Projects do not need an `env` override in `hk.pkl` for the repository config.
+
+When `mise.toml` exists, `mise-installed` checks that `mise` is available on every hook run, and the `mise` formatter runs when mise config files are in the hook's file set.
 
 The Go vulnerability step verifies the exact `golang.org/x/vuln/cmd/govulncheck` tool declaration, then runs `go tool govulncheck ./...` from each module workspace. It watches Go source plus `go.mod` and `go.sum`, so dependency-only changes are scanned. Go projects that import `Go.pkl` must declare govulncheck as a Go tool dependency so its version and checksums remain in `go.mod` and `go.sum`.
 
