@@ -4,6 +4,19 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.11.1](https://github.com/2h2d-co/hk-config/compare/v0.11.0..v0.11.1) - 2026-10-03
+#### Bug Fixes
+- (**go**) detect the govulncheck tool declaration on Go 1.27 - ([c1c464e](https://github.com/2h2d-co/hk-config/commit/c1c464edf0d8a1e2f2ce92a07be0a78aaab0c2a7)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.11.0 - ([562f7c3](https://github.com/2h2d-co/hk-config/commit/562f7c3e1c745b5e406fd98b8be450cf9c5c8ba8)) - Kaan Ozdokmeci
+#### Continuous Integration
+- update mise-action to 4.3.0 and mise to 2026.9.14 - ([4231f9c](https://github.com/2h2d-co/hk-config/commit/4231f9cd1cdfe62859192b35e6c39227faaf79e2)) - Kaan Ozdokmeci
+#### Miscellaneous Chores
+- (**mise**) enable generate lockfile mode - ([c922f0f](https://github.com/2h2d-co/hk-config/commit/c922f0fd51dced25c8f739c990e939d4e609ff3c)) - Kaan Ozdokmeci
+- (**tools**) update hk to 2.2.0, shfmt to 3.14.1, and zizmor to 1.30.1 - ([352c973](https://github.com/2h2d-co/hk-config/commit/352c97312fddee00c82ef975212f26cfcbf0d525)) - Kaan Ozdokmeci
+- run full validation through mise run check - ([3f6c0a1](https://github.com/2h2d-co/hk-config/commit/3f6c0a14c7099f254dd3a2b45c3b5455c6a10b6c)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.11.0](https://github.com/2h2d-co/hk-config/compare/v0.10.0..v0.11.0) - 2026-09-25
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.0.1 - ([f683491](https://github.com/2h2d-co/hk-config/commit/f68349110339fe31d32886cf43b31b1f6ee6dd07)) - Kaan Ozdokmeci
