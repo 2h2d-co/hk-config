@@ -22,7 +22,7 @@ goSteps = new Mapping<String, Config.Step> {
     check = new Config.CommandSpec {
       command = #"""
         cd {{workspace}}
-        if ! go tool | grep -Fxq 'golang.org/x/vuln/cmd/govulncheck'; then
+        if ! go tool -n golang.org/x/vuln/cmd/govulncheck >/dev/null; then
           echo 'govulncheck must be declared as a Go tool dependency' >&2
           echo 'run: go get -tool golang.org/x/vuln/cmd/govulncheck@v1.7.0' >&2
           exit 1
