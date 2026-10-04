@@ -6,6 +6,8 @@ local function bin(tool: String): String = "\"{{root}}/node_modules/.bin/\(tool)
 
 typeScriptSteps = new Mapping<String, Config.Step> {
   ["oxfmt"] = (Builtins.oxfmt) {
+    // Base's mise step owns mise configuration files; two formatters would fight over them.
+    exclude = Builtins.mise.glob
     check { command = "\(bin("oxfmt")) --check --no-error-on-unmatched-pattern {{files}}" }
     check_list_files {
       command = "\(bin("oxfmt")) --list-different --no-error-on-unmatched-pattern {{files}}"
