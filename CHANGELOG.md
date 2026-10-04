@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.12.0](https://github.com/2h2d-co/hk-config/compare/v0.11.1..v0.12.0) - 2026-10-04
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) require every tool that a step calls - ([85d5670](https://github.com/2h2d-co/hk-config/commit/85d567045b7f9a41fed0f77d0de7e0427a42e281)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.11.1 - ([60901ea](https://github.com/2h2d-co/hk-config/commit/60901ea2a71a64d4486be6962862fdf7a809152c)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.11.1](https://github.com/2h2d-co/hk-config/compare/v0.11.0..v0.11.1) - 2026-10-03
 #### Bug Fixes
 - (**go**) detect the govulncheck tool declaration on Go 1.27 - ([c1c464e](https://github.com/2h2d-co/hk-config/commit/c1c464edf0d8a1e2f2ce92a07be0a78aaab0c2a7)) - Kaan Ozdokmeci
