@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.12.1](https://github.com/2h2d-co/hk-config/compare/v0.12.0..v0.12.1) - 2026-10-04
+#### Bug Fixes
+- (**typescript**) leave mise configuration files to the mise formatter - ([b0151f4](https://github.com/2h2d-co/hk-config/commit/b0151f41117153f8fcf6f450d23244541f5ae6f6)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.12.0 - ([b7ac0c6](https://github.com/2h2d-co/hk-config/commit/b7ac0c63f0c45e6871fa6500ffa9c11dea47a957)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.12.0](https://github.com/2h2d-co/hk-config/compare/v0.11.1..v0.12.0) - 2026-10-04
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) require every tool that a step calls - ([85d5670](https://github.com/2h2d-co/hk-config/commit/85d567045b7f9a41fed0f77d0de7e0427a42e281)) - Kaan Ozdokmeci
