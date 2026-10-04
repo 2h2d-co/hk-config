@@ -1,29 +1,9 @@
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl" as Config
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
 
-// Show when conditional steps are skipped because profiles or command/file conditions do not match.
+// Show when steps are skipped because a profile or a step condition does not match. Every tool a
+// step calls is required: a missing tool fails the step instead of skipping it.
 displaySkipReasons = List("profile-not-enabled", "condition-false")
-
-function commandExistsCondition(command: String): String =
-  "exec('command -v \(command) >/dev/null 2>&1; echo $?') == '0\n'"
-
-function commandMissingCondition(command: String): String =
-  "exec('command -v \(command) >/dev/null 2>&1; echo $?') != '0\n'"
-
-function optionalCommand(command: String, step: Config.Step): Config.Step =
-  (step) {
-    step_condition = commandExistsCondition(command)
-  }
-
-function fileExistsCondition(file: String): String =
-  "exec('test -f \"\(file)\"; echo $?') == '0\n'"
-
-function whenFileExists(file: String, step: Config.Step): Config.Step =
-  (step) {
-    step_condition = fileExistsCondition(file)
-  }
-
-conventionalCommitTypes = "build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release"
 
 literalEscapeSequencesInCommitMessage = new Config.Step {
   check = #"""
@@ -69,11 +49,7 @@ lightweightReleaseTagsPrePush = new Config.Step {
 
 commitMessageSteps = new Mapping<String, Config.Step> {
   ["literal-escape-sequences"] = literalEscapeSequencesInCommitMessage
-  ["cocogitto-commit-msg"] = optionalCommand("cog", Builtins.cocogitto_commit_msg)
-  ["check-conventional-commit"] = (Builtins.check_conventional_commit) {
-    step_condition = commandMissingCondition("cog")
-    check = "hk util check-conventional-commit --allowed-types=\(conventionalCommitTypes) \"{{commit_msg_file}}\""
-  }
+  ["cocogitto-commit-msg"] = Builtins.cocogitto_commit_msg
 }
 
 function defaultHooks(
@@ -117,7 +93,7 @@ baseSteps = new Mapping<String, Config.Step> {
   ["trailing-whitespace"] = Builtins.trailing_whitespace
   ["detect-private-key"] = Builtins.detect_private_key
 
-  ["betterleaks"] = optionalCommand("betterleaks", new Config.Step {
+  ["betterleaks"] = new Config.Step {
     types = List("text")
     batch = true
     check = #"""
@@ -131,12 +107,6 @@ baseSteps = new Mapping<String, Config.Step> {
       fi
       betterleaks dir --redact --verbose --no-banner {{files}}
       """#
-  })
-  ["mise-installed"] {
-    step_condition = fileExistsCondition("mise.toml")
-    check = "mise --version >/dev/null 2>&1"
   }
-  ["mise"] = (whenFileExists("mise.toml", Builtins.mise)) {
-    depends = List("mise-installed")
-  }
+  ["mise"] = Builtins.mise
 }

@@ -5,7 +5,7 @@
 ## Commit and release conventions
 
 - Use [Conventional Commits](https://www.conventionalcommits.org/) for every commit.
-- `Base.pkl` validates commit messages with Cocogitto when `cog` is installed and falls back to hk's conventional-commit utility when it is not.
+- `Base.pkl` validates commit messages with Cocogitto. Every tool a step calls is required: never make a step conditional on a tool being installed. A missing tool must fail the step.
 - Release commits must use exactly:
 
   ```text

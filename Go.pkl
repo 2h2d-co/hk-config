@@ -1,23 +1,44 @@
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl" as Config
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
-import "./Base.pkl" as Base
 
 goSteps = new Mapping<String, Config.Step> {
-  ["go-imports"] = Base.optionalCommand("goimports", Builtins.go_imports)
-  ["go-fmt"] = (Base.optionalCommand("gofmt", Builtins.go_fmt)) {
+  // goimports is a Go tool dependency, so its version stays in go.mod and go.sum.
+  ["go-imports"] = (Builtins.go_imports) {
+    check_list_files {
+      command = #"""
+        FILES=$(go tool goimports -l {{files}})
+        if [ -n "$FILES" ]; then
+        echo "$FILES"
+        exit 1
+        fi
+        """#
+    }
+    check_diff {
+      command = #"""
+        DIFF=$(go tool goimports -d {{files}})
+        if [ -n "$DIFF" ]; then
+        echo "$DIFF"
+        exit 1
+        fi
+        """#
+    }
+    fix {
+      command = new Config.Command { argv = List("go", "tool", "goimports", "-w", "{{files}}") }
+    }
+  }
+  ["go-fmt"] = (Builtins.go_fmt) {
     depends = List("go-imports")
   }
-  ["gomod-tidy"] = Base.optionalCommand("go", Builtins.gomod_tidy)
-  ["go-vet"] = (Base.optionalCommand("go", Builtins.go_vet)) {
+  ["gomod-tidy"] = Builtins.gomod_tidy
+  ["go-vet"] = (Builtins.go_vet) {
     depends = List("go-fmt", "gomod-tidy")
   }
-  ["golangci-lint"] = (Base.optionalCommand("golangci-lint", Builtins.golangci_lint)) {
+  ["golangci-lint"] = (Builtins.golangci_lint) {
     depends = List("go-fmt", "gomod-tidy")
   }
   ["go-vuln-check"] = new Config.Step {
     glob = List("**/*.go", "**/go.mod", "**/go.sum")
     workspace_indicator = "go.mod"
-    step_condition = Base.commandExistsCondition("go")
     depends = List("go-vet")
     check = new Config.CommandSpec {
       command = #"""

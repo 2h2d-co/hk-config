@@ -8,11 +8,11 @@ These configs are committed Pkl library modules that project repos import. They 
 
 - `Base.pkl` — general hygiene, secret-safety, and conventional commit step mappings.
 - `Config.pkl` — the shared amended hk schema and minimum hk version.
-- `Python.pkl` — Python syntax/debug and optional Ruff steps.
-- `TypeScript.pkl` — optional Oxfmt, Oxlint, and TypeScript steps.
-- `Go.pkl` — optional Go formatting, module, vet, vulnerability, and golangci-lint steps.
-- `GitHubActions.pkl` — optional GitHub Actions linting and security steps.
-- `Shell.pkl` — optional shfmt and ShellCheck steps for `.sh`/`.bash` files.
+- `Python.pkl` — Python syntax/debug and Ruff steps.
+- `TypeScript.pkl` — Oxfmt, Oxlint, and TypeScript steps.
+- `Go.pkl` — goimports, gofmt, module, vet, vulnerability, and golangci-lint steps.
+- `GitHubActions.pkl` — GitHub Actions linting and security steps.
+- `Shell.pkl` — shfmt and ShellCheck steps for `.sh`/`.bash` files.
 - `PklProject` — Pkl package metadata for release artifacts.
 - `cog.toml` and `CHANGELOG.md` — Cocogitto release/changelog configuration for this repo.
 - `AGENTS.md` — repository conventions for coding agents and humans.
@@ -24,18 +24,34 @@ Every project `hk.pkl` amends this package's `Config.pkl`, which amends hk's ver
 
 Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 2.0.1 correctly evaluates sibling helper functions in partially imported modules.
 
-## Conditional external tools
+## Required tools
 
-hk conditions are `expr` strings. These configs use `step_condition` in two ways:
+Every tool a step calls is required. A missing tool fails the step; nothing is skipped because a
+tool is absent. A project provides the tools of every module it imports:
 
-- command-optional steps use `Base.optionalCommand(...)` and skip when the executable is not on `PATH`.
-- project-file-conditioned steps use `Base.whenFileExists(...)` and run when the repository contains the marker file.
+| Module | Tools | Provided by |
+| --- | --- | --- |
+| `Base.pkl` | `betterleaks`, `cog`, `mise` | the project's `mise.toml` (`betterleaks`, `cocogitto`) |
+| `GitHubActions.pkl` | `actionlint`, `zizmor` | the project's `mise.toml` |
+| `Shell.pkl` | `shfmt`, `shellcheck` | the project's `mise.toml` |
+| `Python.pkl` | `ruff` | the project's environment |
+| `TypeScript.pkl` | `oxfmt`, `oxlint`, `tsc` | the project's npm (or pnpm) dev dependencies, called from `node_modules/.bin` at the repository root |
+| `Go.pkl` | `go`, `gofmt`, `golangci-lint`, `goimports`, `govulncheck` | Go and golangci-lint in the project's `mise.toml`; goimports and govulncheck as Go tool dependencies in `go.mod` |
 
-The base config runs `betterleaks` opportunistically when installed and passes each hk batch's selected files to one multi-path scan. Betterleaks scopes the scan to those paths while avoiding a separate scanner process for every file.
+The TypeScript steps call `{{root}}/node_modules/.bin/<tool>`, so they need neither a
+`node_modules/.bin` entry on `PATH` nor a package-manager script wrapper. Their versions stay in
+the project's lockfile, together with the plugins and shared configs they load. Run the project's
+dependency installation before checking.
+
+The base config passes each hk batch's selected files to one multi-path `betterleaks` scan. Betterleaks scopes the scan to those paths while avoiding a separate scanner process for every file.
 
 Betterleaks only discovers `.betterleaks.toml` or `.gitleaks.toml` when its scan target is a directory, so it would apply its default rules to these file paths. The step therefore uses the first of `.betterleaks.toml` or `.gitleaks.toml` found at the repository root as `BETTERLEAKS_CONFIG`. This is the same file order Betterleaks uses. A config already set through `BETTERLEAKS_CONFIG`, `GITLEAKS_CONFIG`, `BETTERLEAKS_CONFIG_TOML`, or `GITLEAKS_CONFIG_TOML` takes precedence. Repositories without a config file use the default rules. Projects do not need an `env` override in `hk.pkl` for the repository config.
 
-When `mise.toml` exists, `mise-installed` checks that `mise` is available on every hook run, and the `mise` formatter runs when mise config files are in the hook's file set.
+The `mise` formatter runs when mise config files are in the hook's file set.
+
+The Go import step runs `go tool goimports`. Go projects that import `Go.pkl` declare it with
+`go get -tool golang.org/x/tools/cmd/goimports@<version>`. It also checks files that
+golangci-lint does not load, such as files for other build tags or operating systems.
 
 The Go vulnerability step verifies the exact `golang.org/x/vuln/cmd/govulncheck` tool declaration, then runs `go tool govulncheck ./...` from each module workspace. It watches Go source plus `go.mod` and `go.sum`, so dependency-only changes are scanned. Go projects that import `Go.pkl` must declare govulncheck as a Go tool dependency so its version and checksums remain in `go.mod` and `go.sum`.
 
@@ -43,15 +59,7 @@ The Go vulnerability step verifies the exact `golang.org/x/vuln/cmd/govulncheck`
 
 `Base.pkl` provides the steps used by the `commit-msg` hook. It rejects literal escape sequences before the commit is created. Literal `\n` sequences receive specific guidance to use multiple `-m` arguments or ANSI-C shell quoting (`$'...\n...'`) for newlines; other backslash escape sequences receive a general validation error.
 
-If `cog` is available, the hook also uses hk's `cocogitto-commit-msg` builtin and Cocogitto validates according to the repo's `cog.toml`. If `cog` is not available, it falls back to hk's `check-conventional-commit` utility with the standard Conventional Commit types plus `release`.
-
-Allowed types for the fallback hk utility path:
-
-```text
-build,chore,ci,docs,feat,fix,perf,refactor,revert,style,test,release
-```
-
-If a repo uses Cocogitto and wants `release: ...` commits, configure Cocogitto to allow that custom type in `cog.toml`. This repo's `cog.toml` allows `release: vX.Y.Z` commits and sets `tag_prefix = "v"` so release tags are `vX.Y.Z`.
+The hook then uses hk's `cocogitto-commit-msg` builtin, and Cocogitto validates according to the repo's `cog.toml`. To allow `release: ...` commits, configure Cocogitto to accept that custom type in `cog.toml`. This repo's `cog.toml` allows `release: vX.Y.Z` commits and sets `tag_prefix = "v"` so release tags are `vX.Y.Z`.
 
 Release tags must be lightweight tags. Create one with `git tag vX.Y.Z`; do not use `git tag -a`, `git tag -s`, `git tag -m`, or `cog bump --annotated`. The shared pre-commit hook rejects a release tag on `HEAD` when it is annotated or signed, and the pre-push hook rejects an annotated or signed release tag before it reaches a remote.
 
@@ -114,8 +122,8 @@ import "package://github.com/2h2d-co/hk-config/releases/download/v0.11.1/hk-conf
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
-  ["taplo"] = Base.optionalCommand("taplo", Builtins.taplo)
-  ["taplo-format"] = Base.optionalCommand("taplo", Builtins.taplo_format)
+  ["taplo"] = Builtins.taplo
+  ["taplo-format"] = Builtins.taplo_format
 }
 
 local projectSteps = (Base.baseSteps) {

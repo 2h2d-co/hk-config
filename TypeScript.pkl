@@ -1,13 +1,22 @@
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl" as Config
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
-import "./Base.pkl" as Base
+// The project's package manager installs these tools, so their versions stay in its lockfile.
+// Steps call them from node_modules/.bin at the repository root instead of relying on PATH.
+local function bin(tool: String): String = "\"{{root}}/node_modules/.bin/\(tool)\""
 
 typeScriptSteps = new Mapping<String, Config.Step> {
-  ["oxfmt"] = (Base.optionalCommand("oxfmt", Builtins.oxfmt)) {
-    check = "oxfmt --check --no-error-on-unmatched-pattern {{files}}"
-    check_list_files = "oxfmt --list-different --no-error-on-unmatched-pattern {{files}}"
-    fix = "oxfmt --write --no-error-on-unmatched-pattern {{files}}"
+  ["oxfmt"] = (Builtins.oxfmt) {
+    check { command = "\(bin("oxfmt")) --check --no-error-on-unmatched-pattern {{files}}" }
+    check_list_files {
+      command = "\(bin("oxfmt")) --list-different --no-error-on-unmatched-pattern {{files}}"
+    }
+    fix { command = "\(bin("oxfmt")) --write --no-error-on-unmatched-pattern {{files}}" }
   }
-  ["oxlint"] = Base.optionalCommand("oxlint", Builtins.ox_lint)
-  ["tsc"] = Base.optionalCommand("tsc", Builtins.tsc)
+  ["oxlint"] = (Builtins.ox_lint) {
+    check { command = "\(bin("oxlint")) --deny-warnings {{files}}" }
+    fix { command = "\(bin("oxlint")) --deny-warnings --fix {{files}}" }
+  }
+  ["tsc"] = (Builtins.tsc) {
+    check { command = "\(bin("tsc")) --noEmit -p {{workspace_indicator}}" }
+  }
 }
