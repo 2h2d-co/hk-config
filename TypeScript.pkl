@@ -1,5 +1,5 @@
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 // The project's package manager installs these tools, so their versions stay in its lockfile.
 // Steps call them from node_modules/.bin at the repository root instead of relying on PATH.
 local function bin(tool: String): String = "\"{{root}}/node_modules/.bin/\(tool)\""
@@ -9,8 +9,8 @@ typeScriptSteps = new Mapping<String, Config.Step> {
     // Base's mise step owns mise configuration files; two formatters would fight over them.
     exclude = Builtins.mise.glob
     check { command = "\(bin("oxfmt")) --check --no-error-on-unmatched-pattern {{files}}" }
-    check_list_files {
-      command = "\(bin("oxfmt")) --list-different --no-error-on-unmatched-pattern {{files}}"
+    check_diff {
+      command = "hk util format-diff {{files}} -- \(bin("oxfmt")) --stdin-filepath {}"
     }
     fix { command = "\(bin("oxfmt")) --write --no-error-on-unmatched-pattern {{files}}" }
   }

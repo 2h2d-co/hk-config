@@ -1,10 +1,10 @@
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 
 gitHubActionsSteps = new Mapping<String, Config.Step> {
   ["actionlint"] = Builtins.actionlint
   ["zizmor"] = (Builtins.zizmor) {
-    check_diff = "zizmor --no-progress --pedantic --no-ignores {{ files }}"
-    fix = "zizmor --no-progress --pedantic --no-ignores --fix {{ files }}"
+    check { command = "zizmor --no-progress --pedantic --no-ignores {{ files }}" }
+    fix { command = "zizmor --no-progress --pedantic --no-ignores --fix {{ files }}" }
   }
 }

@@ -1,5 +1,5 @@
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 
 // Show when steps are skipped because a profile or a step condition does not match. Every tool a
 // step calls is required: a missing tool fails the step instead of skipping it.

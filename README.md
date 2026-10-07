@@ -22,7 +22,7 @@ These configs are committed Pkl library modules that project repos import. They 
 
 Every project `hk.pkl` amends this package's `Config.pkl`, which amends hk's version-matched schema and sets `min_hk_version`. The remaining modules are regular Pkl libraries: `Base.pkl` exports shared helpers and step mappings, while stack-specific modules export additional step mappings. Project configs import the required mappings, spread them into one steps map, and pass that map to `Base.defaultHooks(...)`.
 
-Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 2.0.1 correctly evaluates sibling helper functions in partially imported modules.
+Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 2.4.0 correctly evaluates sibling helper functions in partially imported modules.
 
 ## Required tools
 
@@ -71,7 +71,7 @@ Prefer domain-specific tools when they exist, then add generic formatters only f
 - `actionlint` and `zizmor` understand GitHub Actions semantics. The shared zizmor step uses its pedantic persona and audits suppressed findings with `--no-ignores`. Generic YAML tools can be useful in a future `Yaml.pkl`, but they do not replace Actions-specific checks.
 - `hk validate` checks hk config semantics after Pkl evaluation. `pkl_format` is useful for formatting Pkl source, and `pkl eval` checks generic Pkl evaluation, but neither is a substitute for `hk validate` on hk config files.
 - Avoid two generic formatters owning the same file unless their output is stable together; if multiple fixers touch the same files, order them with `depends`.
-- The Oxfmt step passes `--no-error-on-unmatched-pattern`, allowing project-level Oxfmt ignore rules to filter every selected file without failing the hook.
+- The Oxfmt step passes `--no-error-on-unmatched-pattern`, allowing project-level Oxfmt ignore rules to filter every selected file without failing the hook. In fix mode, the step builds a patch with `hk util format-diff` from Oxfmt's stdin mode, which applies the same ignore rules.
 
 ## Use from a repo
 
@@ -108,7 +108,7 @@ hooks = Base.defaultHooks(true, projectSteps)
 
 `Base.defaultHooks(...)` declares the `pre-commit`, `pre-push`, `commit-msg`, `fix`, and `check` hooks. Under hk 2, `pre-commit` stages the fixes it applies, while `hk fix` leaves fixes unstaged.
 
-The package requires hk 2.0.1 or newer. Pin `hk = "2.0.1"` in the project's `mise.toml`. The mise registry installs hk 2 through the `packslip` backend, which needs mise 2026.9.2 or newer, including the mise version pinned in CI. Lock every platform the project runs on, for example `mise lock --platform linux-x64,linux-arm64,macos-arm64`.
+The package requires hk 2.4.0 or newer. Pin `hk = "2.4.0"` in the project's `mise.toml`. The mise registry installs hk 2 through the `packslip` backend, which needs mise 2026.9.2 or newer, including the mise version pinned in CI. Lock every platform the project runs on, for example `mise lock --platform linux-x64,linux-arm64,macos-arm64`.
 
 Import only the stack modules the project uses. For base-only configuration, import only `Base.pkl` and pass `Base.baseSteps` to `Base.defaultHooks(...)`.
 
@@ -119,7 +119,7 @@ amends "package://github.com/2h2d-co/hk-config/releases/download/v0.12.1/hk-conf
 
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.12.1/hk-config@0.12.1#/Base.pkl" as Base
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.12.1/hk-config@0.12.1#/Python.pkl" as Python
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
   ["taplo"] = Builtins.taplo
