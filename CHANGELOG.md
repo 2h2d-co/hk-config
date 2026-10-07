@@ -4,6 +4,15 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.13.0](https://github.com/2h2d-co/hk-config/compare/v0.12.1..v0.13.0) - 2026-10-07
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.4.0 - ([f3905d9](https://github.com/2h2d-co/hk-config/commit/f3905d9dfb0e31f2f695f29323b6e3b75b68d39b)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.12.1 - ([3d31be5](https://github.com/2h2d-co/hk-config/commit/3d31be5e91718033b6cb689012361041f13bc06f)) - Kaan Ozdokmeci
+#### Miscellaneous Chores
+- (**tools**) update hk to 2.4.0 and Betterleaks to 1.9.0 - ([a35ea77](https://github.com/2h2d-co/hk-config/commit/a35ea77f2c352906b5e2f56f0bd3bfdf9e6b1262)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.12.1](https://github.com/2h2d-co/hk-config/compare/v0.12.0..v0.12.1) - 2026-10-04
 #### Bug Fixes
 - (**typescript**) leave mise configuration files to the mise formatter - ([b0151f4](https://github.com/2h2d-co/hk-config/commit/b0151f41117153f8fcf6f450d23244541f5ae6f6)) - Kaan Ozdokmeci
