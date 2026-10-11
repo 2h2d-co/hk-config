@@ -1,5 +1,5 @@
-import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.5.0/hk@2.5.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v2.5.0/hk@2.5.0#/Builtins.pkl"
 
 gitHubActionsSteps = new Mapping<String, Config.Step> {
   ["actionlint"] = Builtins.actionlint
