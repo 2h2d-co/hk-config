@@ -15,8 +15,8 @@ typeScriptSteps = new Mapping<String, Config.Step> {
     fix { command = "\(bin("oxfmt")) --write --no-error-on-unmatched-pattern {{files}}" }
   }
   ["oxlint"] = (Builtins.ox_lint) {
-    check { command = "\(bin("oxlint")) --deny-warnings {{files}}" }
-    fix { command = "\(bin("oxlint")) --deny-warnings --fix {{files}}" }
+    check { command = "\(bin("oxlint")) --deny-warnings --no-error-on-unmatched-pattern {{files}}" }
+    fix { command = "\(bin("oxlint")) --deny-warnings --no-error-on-unmatched-pattern --fix {{files}}" }
   }
   ["tsc"] = (Builtins.tsc) {
     check { command = "\(bin("tsc")) --noEmit -p {{workspace_indicator}}" }

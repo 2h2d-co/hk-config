@@ -72,6 +72,7 @@ Prefer domain-specific tools when they exist, then add generic formatters only f
 - `hk validate` checks hk config semantics after Pkl evaluation. `pkl_format` is useful for formatting Pkl source, and `pkl eval` checks generic Pkl evaluation, but neither is a substitute for `hk validate` on hk config files.
 - Avoid two generic formatters owning the same file unless their output is stable together; if multiple fixers touch the same files, order them with `depends`.
 - The Oxfmt step passes `--no-error-on-unmatched-pattern`, allowing project-level Oxfmt ignore rules to filter every selected file without failing the hook. In fix mode, the step builds a patch with `hk util format-diff` from Oxfmt's stdin mode, which applies the same ignore rules.
+- The Oxlint step also passes `--no-error-on-unmatched-pattern`. Without it, Oxlint fails when project-level ignore patterns filter every selected file, such as a commit that stages only ignored files. Lint findings in the remaining files still fail the step.
 
 ## Use from a repo
 
