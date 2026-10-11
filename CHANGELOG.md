@@ -4,6 +4,15 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.14.0](https://github.com/2h2d-co/hk-config/compare/v0.13.1..v0.14.0) - 2026-10-11
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.5.0 - ([520781c](https://github.com/2h2d-co/hk-config/commit/520781ce4a854c3701562b2926d4cd4bf8967354)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.13.1 - ([cc0504c](https://github.com/2h2d-co/hk-config/commit/cc0504c54f298a585da943d487a87af7d49d876f)) - Kaan Ozdokmeci
+#### Miscellaneous Chores
+- (**tools**) update hk to 2.5.0 - ([8ceb19b](https://github.com/2h2d-co/hk-config/commit/8ceb19bec351f5b8b2469d8af6f923e8842b3e29)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.13.1](https://github.com/2h2d-co/hk-config/compare/v0.13.0..v0.13.1) - 2026-10-11
 #### Bug Fixes
 - (**typescript**) pass oxlint when ignore patterns filter every file - ([4b2d3c9](https://github.com/2h2d-co/hk-config/commit/4b2d3c9fcc176e2bd1b55a4ed9b0bc39f34346de)) - Kaan Ozdokmeci
