@@ -4,6 +4,17 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.15.0](https://github.com/2h2d-co/hk-config/compare/v0.14.0..v0.15.0) - 2026-10-22
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.8.0 - ([e1bec0d](https://github.com/2h2d-co/hk-config/commit/e1bec0d64028fd80a9938fbe534d43c1f4167a17)) - Kaan Ozdokmeci
+#### Bug Fixes
+- (**tools**) update hk to 2.8.0 and Pkl to 0.32.2 - ([bfef201](https://github.com/2h2d-co/hk-config/commit/bfef201ae5eadf2581a13fee29fb889287c5005f)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.14.0 - ([5dd6a83](https://github.com/2h2d-co/hk-config/commit/5dd6a83d0d892871f1384ee3343e311505fbdb22)) - Kaan Ozdokmeci
+#### Continuous Integration
+- update mise to 2026.10.17 - ([ae2df25](https://github.com/2h2d-co/hk-config/commit/ae2df25527db61efa0e6fcfd3a07a1d0195fdd01)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.14.0](https://github.com/2h2d-co/hk-config/compare/v0.13.1..v0.14.0) - 2026-10-11
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.5.0 - ([520781c](https://github.com/2h2d-co/hk-config/commit/520781ce4a854c3701562b2926d4cd4bf8967354)) - Kaan Ozdokmeci
