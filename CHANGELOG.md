@@ -4,6 +4,14 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.17.0](https://github.com/2h2d-co/hk-config/compare/v0.16.0..v0.17.0) - 2026-10-22
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) (**python**) check uv run scripts and stop writing bytecode - ([51b2c10](https://github.com/2h2d-co/hk-config/commit/51b2c107328f4023caa14866db6ceccec17bac93)) - Kaan Ozdokmeci
+- skip hooks in repositories without their own hk config - ([98e182d](https://github.com/2h2d-co/hk-config/commit/98e182dc0f3e6f26f2441039e6833e7484e04dc5)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.16.0 - ([d5a60a3](https://github.com/2h2d-co/hk-config/commit/d5a60a301ea0028e3202cb69ee2e857545e51ca5)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.16.0](https://github.com/2h2d-co/hk-config/compare/v0.15.0..v0.16.0) - 2026-10-22
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) lint GitHub Actions with jactionlint instead of actionlint - ([07f5b47](https://github.com/2h2d-co/hk-config/commit/07f5b47c4530f334d5f407735b1340cfc5791a97)) - Kaan Ozdokmeci
