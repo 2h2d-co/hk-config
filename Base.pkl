@@ -1,9 +1,11 @@
 import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Config.pkl" as Config
 import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Builtins.pkl"
 
-// Show when steps are skipped because a profile or a step condition does not match. Every tool a
-// step calls is required: a missing tool fails the step instead of skipping it.
-displaySkipReasons = List("profile-not-enabled", "condition-false")
+// Show when steps are skipped because a profile is not enabled. Every tool a step calls is
+// required: a missing tool fails the step instead of skipping it. Steps skipped by a false
+// condition stay quiet, because `ownRepositoryCondition` skips every step in a repository nested
+// under another project.
+displaySkipReasons = List("profile-not-enabled")
 
 literalEscapeSequencesInCommitMessage = new Config.Step {
   check = #"""
@@ -52,6 +54,23 @@ commitMessageSteps = new Mapping<String, Config.Step> {
   ["cocogitto-commit-msg"] = Builtins.cocogitto_commit_msg
 }
 
+// hk searches the working directory and its parents for a config, and runs steps from the Git
+// repository root. A repository without its own config inside another project's directory, such
+// as a clone under a workspace, would otherwise run that project's steps. Every step therefore
+// runs only when the repository root holds the hk config.
+ownRepositoryCondition =
+  #"exec_ok("test -f hk.pkl -o -f .config/hk.pkl -o -f hk.local.pkl -o -f .config/hk.local.pkl")"#
+
+function ownRepositoryOnly(steps: Mapping<String, Config.Step>): Mapping<String, Config.Step> =
+  steps
+    .toMap()
+    .mapValues((_, step) -> (step) {
+      step_condition =
+        if (step.step_condition == null) ownRepositoryCondition
+        else "(\(ownRepositoryCondition)) && (\(step.step_condition))"
+    })
+    .toMapping()
+
 function defaultHooks(
   autofix: Boolean,
   projectSteps: Mapping<String, Config.Step>,
@@ -60,24 +79,24 @@ function defaultHooks(
     ["pre-commit"] {
       fix = autofix
       stash = "git"
-      steps = (projectSteps) {
+      steps = ownRepositoryOnly((projectSteps) {
         ["lightweight-release-tags"] = lightweightReleaseTagsAtHead
-      }
+      })
     }
     ["pre-push"] {
-      steps = (projectSteps) {
+      steps = ownRepositoryOnly((projectSteps) {
         ["lightweight-release-tags"] = lightweightReleaseTagsPrePush
-      }
+      })
     }
     ["commit-msg"] {
-      steps = commitMessageSteps
+      steps = ownRepositoryOnly(commitMessageSteps)
     }
     ["fix"] {
       fix = true
-      steps = projectSteps
+      steps = ownRepositoryOnly(projectSteps)
     }
     ["check"] {
-      steps = projectSteps
+      steps = ownRepositoryOnly(projectSteps)
     }
   }
 

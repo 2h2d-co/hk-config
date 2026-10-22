@@ -24,6 +24,8 @@ Every project `hk.pkl` amends this package's `Config.pkl`, which amends hk's ver
 
 Keeping library modules separate from the amended hk configuration is required by current Pkl semantics. hk 2.4.0 correctly evaluates sibling helper functions in partially imported modules.
 
+hk searches the working directory and its parents for a config, so a Git repository without its own config inside another project's directory, such as a clone under a workspace, would run that project's hooks. `Base.defaultHooks(...)` gives every step the condition `Base.ownRepositoryCondition`: the step runs only when the repository root contains `hk.pkl`, `.config/hk.pkl`, `hk.local.pkl`, or `.config/hk.local.pkl`. In a nested repository without one, every step is skipped silently and the commit proceeds. A step's own `step_condition` is combined with this one.
+
 ## Required tools
 
 Every tool a step calls is required. A missing tool fails the step; nothing is skipped because a
