@@ -4,6 +4,17 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.16.0](https://github.com/2h2d-co/hk-config/compare/v0.15.0..v0.16.0) - 2026-10-22
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) lint GitHub Actions with jactionlint instead of actionlint - ([07f5b47](https://github.com/2h2d-co/hk-config/commit/07f5b47c4530f334d5f407735b1340cfc5791a97)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.15.0 - ([f96f7fa](https://github.com/2h2d-co/hk-config/commit/f96f7fa8b10654ae118928dc76d96f26f031ed5a)) - Kaan Ozdokmeci
+#### Continuous Integration
+- set release job timeouts and drop an unused job output - ([7f33b71](https://github.com/2h2d-co/hk-config/commit/7f33b714353ae64c910855d87ab1733d402f2680)) - Kaan Ozdokmeci
+- update upload-artifact to 7.0.2 and download-artifact to 8.0.2 - ([56fba5b](https://github.com/2h2d-co/hk-config/commit/56fba5bf7e71af8b86a678664a97baec44370f89)) - Kaan Ozdokmeci
+- distrust compromised eMudhra CA roots on Ubuntu runners - ([60933be](https://github.com/2h2d-co/hk-config/commit/60933be5325b7581ced8e50084504e91f08fda16)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.15.0](https://github.com/2h2d-co/hk-config/compare/v0.14.0..v0.15.0) - 2026-10-22
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.8.0 - ([e1bec0d](https://github.com/2h2d-co/hk-config/commit/e1bec0d64028fd80a9938fbe534d43c1f4167a17)) - Kaan Ozdokmeci
