@@ -2,7 +2,7 @@ import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Config.pk
 import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Builtins.pkl"
 
 gitHubActionsSteps = new Mapping<String, Config.Step> {
-  ["actionlint"] = Builtins.actionlint
+  ["jactionlint"] = Builtins.jactionlint
   ["zizmor"] = (Builtins.zizmor) {
     check { command = "zizmor --no-progress --pedantic --no-ignores {{ files }}" }
     fix { command = "zizmor --no-progress --pedantic --no-ignores --fix {{ files }}" }

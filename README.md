@@ -32,7 +32,7 @@ tool is absent. A project provides the tools of every module it imports:
 | Module | Tools | Provided by |
 | --- | --- | --- |
 | `Base.pkl` | `betterleaks`, `cog`, `mise` | the project's `mise.toml` (`betterleaks`, `cocogitto`) |
-| `GitHubActions.pkl` | `actionlint`, `zizmor` | the project's `mise.toml` |
+| `GitHubActions.pkl` | `jactionlint` 2, `zizmor` | the project's `mise.toml` |
 | `Shell.pkl` | `shfmt`, `shellcheck` | the project's `mise.toml` |
 | `Python.pkl` | `ruff` | the project's environment |
 | `TypeScript.pkl` | `oxfmt`, `oxlint`, `tsc` | the project's npm (or pnpm) dev dependencies, called from `node_modules/.bin` at the repository root |
@@ -68,7 +68,7 @@ Release tags must be lightweight tags. Create one with `git tag vX.Y.Z`; do not 
 Prefer domain-specific tools when they exist, then add generic formatters only for files without a better owner:
 
 - `mise fmt` understands mise config locations and intended formatting. Use TOML tools such as `taplo` or `tombi` for general TOML files, not as a replacement for the mise step.
-- `actionlint` and `zizmor` understand GitHub Actions semantics. The shared zizmor step uses its pedantic persona and audits suppressed findings with `--no-ignores`. Generic YAML tools can be useful in a future `Yaml.pkl`, but they do not replace Actions-specific checks.
+- `jactionlint` and `zizmor` understand GitHub Actions semantics. The shared jactionlint step runs jactionlint's `default` profile; a project chooses another profile with `profile:` in `.github/jactionlint.yaml`. The shared zizmor step uses its pedantic persona and audits suppressed findings with `--no-ignores`. Generic YAML tools can be useful in a future `Yaml.pkl`, but they do not replace Actions-specific checks.
 - `hk validate` checks hk config semantics after Pkl evaluation. `pkl_format` is useful for formatting Pkl source, and `pkl eval` checks generic Pkl evaluation, but neither is a substitute for `hk validate` on hk config files.
 - Avoid two generic formatters owning the same file unless their output is stable together; if multiple fixers touch the same files, order them with `depends`.
 - The Oxfmt step passes `--no-error-on-unmatched-pattern`, allowing project-level Oxfmt ignore rules to filter every selected file without failing the hook. In fix mode, the step builds a patch with `hk util format-diff` from Oxfmt's stdin mode, which applies the same ignore rules.
