@@ -1,9 +1,128 @@
 import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Config.pkl" as Config
-import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Builtins.pkl"
+
+// hk types a file as Python by a `.py` or `.pyi` extension or a `python` shebang. It types a
+// `#!/usr/bin/env -S uv run --script` file as `uv`, so selecting by `types = List("python")` skips
+// extensionless uv scripts. Each step therefore receives every text file and keeps the Python
+// ones itself: `.py` and `.pyi` files, and files whose shebang names `python` or runs `uv run`.
+local selectPythonFiles = #"""
+  set --
+  for file in {{files}}; do
+    case "$file" in
+      *.py | *.pyi) set -- "$@" "$file" ;;
+      *)
+        shebang=
+        IFS= read -r shebang <"$file" || true
+        case "$shebang" in
+          '#!'*python* | '#!'*'uv run'*) set -- "$@" "$file" ;;
+        esac
+        ;;
+    esac
+  done
+  [ "$#" -gt 0 ] || exit 0
+
+  """#
+
+local function pythonCommand(command: String): String = selectPythonFiles + command
+
+// Compiles each file in memory. hk's python-check-ast builtin runs `py_compile`, which writes
+// `__pycache__` directories into the worktree.
+local compileInMemory = #"""
+  python3 - "$@" <<'PYTHON'
+  import sys
+
+  failed = False
+  for path in sys.argv[1:]:
+      try:
+          with open(path, "rb") as source:
+              compile(source.read(), path, "exec", dont_inherit=True)
+      except (SyntaxError, ValueError) as error:
+          print(f"{path}: {error}")
+          failed = True
+  sys.exit(1 if failed else 0)
+  PYTHON
+  """#
+
+local uvScript = "#!/usr/bin/env -S uv run --script\n"
 
 pythonSteps = new Mapping<String, Config.Step> {
-  ["python-check-ast"] = Builtins.python_check_ast
-  ["python-debug-statements"] = Builtins.python_debug_statements
-  ["ruff"] = Builtins.ruff
-  ["ruff-format"] = Builtins.ruff_format
+  ["python-check-ast"] {
+    types = List("text")
+    check = pythonCommand(compileInMemory)
+    tests {
+      ["accepts a valid uv script"] {
+        write { ["{{tmp}}/tool"] = uvScript + "print('ok')\n" }
+        after = "test ! -e {{tmp}}/__pycache__"
+      }
+      ["rejects invalid syntax in a uv script"] {
+        write { ["{{tmp}}/tool"] = uvScript + "x = (\n" }
+        expect { code = 1; stdout = "tool" }
+      }
+      ["rejects invalid syntax in a .py file"] {
+        write { ["{{tmp}}/module.py"] = "def f(:\n" }
+        expect { code = 1 }
+      }
+      ["ignores a shell script"] {
+        write { ["{{tmp}}/tool"] = "#!/bin/sh\necho $((1 + 1))\n" }
+      }
+    }
+  }
+  ["python-debug-statements"] {
+    types = List("text")
+    check = pythonCommand(#"hk util python-debug-statements "$@""#)
+    tests {
+      ["rejects breakpoint in a uv script"] {
+        write { ["{{tmp}}/tool"] = uvScript + "breakpoint()\n" }
+        expect { code = 1 }
+      }
+      ["accepts a python shebang script without debug statements"] {
+        write { ["{{tmp}}/tool"] = "#!/usr/bin/env python3\nprint('ok')\n" }
+      }
+    }
+  }
+  ["ruff"] {
+    types = List("text")
+    check = pythonCommand(#"ruff check --force-exclude "$@""#)
+    fix = pythonCommand(#"ruff check --force-exclude --fix "$@""#)
+    tests {
+      ["accepts a clean executable uv script"] {
+        write { ["{{tmp}}/tool"] = uvScript + "print('ok')\n" }
+        before = "chmod +x {{tmp}}/tool"
+      }
+      ["rejects an unused import in a uv script"] {
+        write { ["{{tmp}}/tool"] = uvScript + "import os\n" }
+        before = "chmod +x {{tmp}}/tool"
+        expect { code = 1 }
+      }
+      ["removes an unused import from a uv script"] {
+        run = "fix"
+        write { ["{{tmp}}/tool"] = uvScript + "import os\n" }
+        before = "chmod +x {{tmp}}/tool"
+        expect { files { ["{{tmp}}/tool"] = uvScript } }
+      }
+      ["ignores a shell script"] {
+        write { ["{{tmp}}/tool"] = "#!/bin/sh\nimport os\n" }
+      }
+    }
+  }
+  ["ruff-format"] {
+    types = List("text")
+    check = pythonCommand(#"ruff format --check --force-exclude "$@""#)
+    fix = pythonCommand(#"ruff format --quiet --force-exclude "$@""#)
+    tests {
+      ["rejects an unformatted uv script"] {
+        write { ["{{tmp}}/tool"] = uvScript + "x=1\n" }
+        expect { code = 1 }
+      }
+      ["formats a uv script"] {
+        run = "fix"
+        write { ["{{tmp}}/tool"] = uvScript + "x=1\n" }
+        expect { files { ["{{tmp}}/tool"] = uvScript + "x = 1\n" } }
+      }
+      ["formats a .py file"] {
+        run = "fix"
+        write { ["{{tmp}}/module.py"] = "x=1\n" }
+        expect { files { ["{{tmp}}/module.py"] = "x = 1\n" } }
+      }
+    }
+  }
 }

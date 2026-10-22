@@ -2,6 +2,7 @@ amends "./Config.pkl"
 
 import "./Base.pkl" as Base
 import "./GitHubActions.pkl" as GitHubActions
+import "./Python.pkl" as Python
 import "./Shell.pkl" as Shell
 
 local repoSteps = new Mapping<String, Step> {
@@ -13,6 +14,7 @@ local repoSteps = new Mapping<String, Step> {
 
 local projectSteps = (Base.baseSteps) {
   ...GitHubActions.gitHubActionsSteps
+  ...Python.pythonSteps
   ...Shell.shellSteps
   ...repoSteps
 }

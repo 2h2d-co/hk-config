@@ -53,6 +53,9 @@ jobs:
       - name: Check repository
         run: hk check --all --check
 
+      - name: Test hk-config steps
+        run: hk test --step python-check-ast --step python-debug-statements --step ruff --step ruff-format
+
       - name: Evaluate GitHub Actions library
         run: pkl eval GitHubActions.pkl >/dev/null
 

@@ -62,7 +62,7 @@ Before handing off changes, run:
 mise run check
 ```
 
-It runs `hk validate`, `hk check --all --check`, and a Pkl package build into a temporary directory.
+It runs `hk validate`, `hk check --all --check`, the step tests that hk-config defines (`hk test --step ...`), and a Pkl package build into a temporary directory. When you add or change a step that hk-config defines rather than a builtin, add `tests` to it and list the step in the `hk test` command of the `check` task and CI.
 
 Library modules are validated with `pkl eval`; only the project `hk.pkl` is an hk configuration module. For GitHub Actions changes, also evaluate the library directly:
 

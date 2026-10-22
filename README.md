@@ -34,7 +34,7 @@ tool is absent. A project provides the tools of every module it imports:
 | `Base.pkl` | `betterleaks`, `cog`, `mise` | the project's `mise.toml` (`betterleaks`, `cocogitto`) |
 | `GitHubActions.pkl` | `jactionlint` 2, `zizmor` | the project's `mise.toml` |
 | `Shell.pkl` | `shfmt`, `shellcheck` | the project's `mise.toml` |
-| `Python.pkl` | `ruff` | the project's environment |
+| `Python.pkl` | `python3`, `ruff` | the project's `mise.toml` (`python`, `ruff`) |
 | `TypeScript.pkl` | `oxfmt`, `oxlint`, `tsc` | the project's npm (or pnpm) dev dependencies, called from `node_modules/.bin` at the repository root |
 | `Go.pkl` | `go`, `gofmt`, `golangci-lint`, `goimports`, `govulncheck` | Go and golangci-lint in the project's `mise.toml`; goimports and govulncheck as Go tool dependencies in `go.mod` |
 
@@ -42,6 +42,12 @@ The TypeScript steps call `{{root}}/node_modules/.bin/<tool>`, so they need neit
 `node_modules/.bin` entry on `PATH` nor a package-manager script wrapper. Their versions stay in
 the project's lockfile, together with the plugins and shared configs they load. Run the project's
 dependency installation before checking.
+
+The Python steps check `.py` and `.pyi` files and every file whose shebang names `python` or runs
+`uv run`, such as extensionless `#!/usr/bin/env -S uv run --script` tools. hk's `python` file
+type misses uv shebangs, so each step receives the hook's text files and selects the Python ones
+itself. The syntax step compiles each file in memory with `python3`; unlike hk's
+`python-check-ast` builtin, it writes no `__pycache__` directories.
 
 The base config passes each hk batch's selected files to one multi-path `betterleaks` scan. Betterleaks scopes the scan to those paths while avoiding a separate scanner process for every file.
 
@@ -177,6 +183,7 @@ hk install --mise
 ```sh
 hk validate
 hk check --all --check
+hk test --step python-check-ast --step python-debug-statements --step ruff --step ruff-format
 tmp=$(mktemp -d)
 HK_CONFIG_VERSION=0.0.0 pkl project package --skip-publish-check --output-path "$tmp" .
 rm -rf "$tmp"
