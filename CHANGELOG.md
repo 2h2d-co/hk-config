@@ -4,6 +4,20 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.18.0](https://github.com/2h2d-co/hk-config/compare/v0.17.0..v0.18.0) - 2026-10-30
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.10.0 - ([fc0c302](https://github.com/2h2d-co/hk-config/commit/fc0c30290bdc590395d84a57fce8c843fdeb63b6)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.17.0 - ([67fd747](https://github.com/2h2d-co/hk-config/commit/67fd747fe525c5825797dbe874e4f19f4f31191d)) - Kaan Ozdokmeci
+#### Continuous Integration
+- audit workflows online with Zizmor - ([517b27b](https://github.com/2h2d-co/hk-config/commit/517b27bd20d7bc538355a94adbb30b7676db2773)) - Kaan Ozdokmeci
+- update jdx/mise-action to v5.2.1 - ([aee8028](https://github.com/2h2d-co/hk-config/commit/aee80283c702cea054c0aa8451d85941aa24459d)) - Kaan Ozdokmeci
+- run workflows with mise 2026.10.18 - ([bb96d48](https://github.com/2h2d-co/hk-config/commit/bb96d48b224c26c16b0763a6a36045976f386e99)) - Kaan Ozdokmeci
+#### Miscellaneous Chores
+- (**tools**) update hk to 2.10.0 - ([9e3325d](https://github.com/2h2d-co/hk-config/commit/9e3325d8b38aa7d48fabbc5f4bded1d8411a6493)) - Kaan Ozdokmeci
+- (**tools**) update Python to 3.15.2 - ([ff86112](https://github.com/2h2d-co/hk-config/commit/ff8611247dcb232070e5a168200d5426d7d69e2c)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.17.0](https://github.com/2h2d-co/hk-config/compare/v0.16.0..v0.17.0) - 2026-10-22
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) (**python**) check uv run scripts and stop writing bytecode - ([51b2c10](https://github.com/2h2d-co/hk-config/commit/51b2c107328f4023caa14866db6ceccec17bac93)) - Kaan Ozdokmeci
