@@ -112,10 +112,10 @@ local projectSteps = (Base.baseSteps) {
   ...Shell.shellSteps
 }
 
-hooks = Base.defaultHooks(true, projectSteps)
+hooks = Base.defaultHooks(projectSteps)
 ```
 
-`Base.defaultHooks(...)` declares the `pre-commit`, `pre-push`, `commit-msg`, `fix`, and `check` hooks. Under hk 2, `pre-commit` stages the fixes it applies, while `hk fix` leaves fixes unstaged. With `autofix` set to `true`, `pre-commit` uses the setup hk recommends for a hook that applies fixes: `fix = true` and `stash = "git"`. hk sets unstaged work aside, fixes and checks the staged content, stages the fixes, and restores the unstaged work.
+`Base.defaultHooks(...)` declares the `pre-commit`, `pre-push`, `commit-msg`, `fix`, and `check` hooks. Under hk 2, `pre-commit` stages the fixes it applies, while `hk fix` leaves fixes unstaged. `pre-commit` always uses the setup hk recommends for a hook that applies fixes: `fix = true` and `stash = "git"`. hk sets unstaged work aside, fixes and checks the staged content, stages the fixes, and restores the unstaged work.
 
 The package requires hk 2.10.0 or newer. Pin `hk = "2.10.0"` in the project's `mise.toml`. The mise registry installs hk 2 through the `packslip` backend, which needs mise 2026.9.2 or newer, including the mise version pinned in CI. Lock every platform the project runs on, for example `mise lock --platform linux-x64,linux-arm64,macos-arm64`.
 
@@ -141,7 +141,7 @@ local projectSteps = (Base.baseSteps) {
 }
 
 display_skip_reasons = Base.displaySkipReasons
-hooks = Base.defaultHooks(true, projectSteps)
+hooks = Base.defaultHooks(projectSteps)
 ```
 
 ## Release workflow

@@ -71,13 +71,13 @@ function ownRepositoryOnly(steps: Mapping<String, Config.Step>): Mapping<String,
     })
     .toMapping()
 
-function defaultHooks(
-  autofix: Boolean,
-  projectSteps: Mapping<String, Config.Step>,
-): Mapping<String, Config.Hook> =
+// The pre-commit hook uses the setup hk documents for a hook that applies fixes: `fix = true`
+// and `stash = "git"`. hk sets unstaged work aside, fixes and checks the staged content, stages
+// the fixes, and restores the unstaged work.
+function defaultHooks(projectSteps: Mapping<String, Config.Step>): Mapping<String, Config.Hook> =
   new Mapping<String, Config.Hook> {
     ["pre-commit"] {
-      fix = autofix
+      fix = true
       stash = "git"
       steps = ownRepositoryOnly((projectSteps) {
         ["lightweight-release-tags"] = lightweightReleaseTagsAtHead
