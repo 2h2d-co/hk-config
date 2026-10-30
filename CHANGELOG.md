@@ -4,6 +4,13 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.19.0](https://github.com/2h2d-co/hk-config/compare/v0.18.0..v0.19.0) - 2026-10-30
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) always fix and stash in the default pre-commit hook - ([b9dbd41](https://github.com/2h2d-co/hk-config/commit/b9dbd412ec620a646b36456f3402d5e1020ecfd0)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.18.0 - ([03a1a94](https://github.com/2h2d-co/hk-config/commit/03a1a942f065dcc85031e61653a503675829359e)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.18.0](https://github.com/2h2d-co/hk-config/compare/v0.17.0..v0.18.0) - 2026-10-30
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.10.0 - ([fc0c302](https://github.com/2h2d-co/hk-config/commit/fc0c30290bdc590395d84a57fce8c843fdeb63b6)) - Kaan Ozdokmeci
