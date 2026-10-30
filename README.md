@@ -115,9 +115,9 @@ local projectSteps = (Base.baseSteps) {
 hooks = Base.defaultHooks(true, projectSteps)
 ```
 
-`Base.defaultHooks(...)` declares the `pre-commit`, `pre-push`, `commit-msg`, `fix`, and `check` hooks. Under hk 2, `pre-commit` stages the fixes it applies, while `hk fix` leaves fixes unstaged.
+`Base.defaultHooks(...)` declares the `pre-commit`, `pre-push`, `commit-msg`, `fix`, and `check` hooks. Under hk 2, `pre-commit` stages the fixes it applies, while `hk fix` leaves fixes unstaged. With `autofix` set to `true`, `pre-commit` uses the setup hk recommends for a hook that applies fixes: `fix = true` and `stash = "git"`. hk sets unstaged work aside, fixes and checks the staged content, stages the fixes, and restores the unstaged work.
 
-The package requires hk 2.8.0 or newer. Pin `hk = "2.8.0"` in the project's `mise.toml`. The mise registry installs hk 2 through the `packslip` backend, which needs mise 2026.9.2 or newer, including the mise version pinned in CI. Lock every platform the project runs on, for example `mise lock --platform linux-x64,linux-arm64,macos-arm64`.
+The package requires hk 2.10.0 or newer. Pin `hk = "2.10.0"` in the project's `mise.toml`. The mise registry installs hk 2 through the `packslip` backend, which needs mise 2026.9.2 or newer, including the mise version pinned in CI. Lock every platform the project runs on, for example `mise lock --platform linux-x64,linux-arm64,macos-arm64`.
 
 Import only the stack modules the project uses. For base-only configuration, import only `Base.pkl` and pass `Base.baseSteps` to `Base.defaultHooks(...)`.
 
@@ -128,7 +128,7 @@ amends "package://github.com/2h2d-co/hk-config/releases/download/v0.17.0/hk-conf
 
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.17.0/hk-config@0.17.0#/Base.pkl" as Base
 import "package://github.com/2h2d-co/hk-config/releases/download/v0.17.0/hk-config@0.17.0#/Python.pkl" as Python
-import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.10.0/hk@2.10.0#/Builtins.pkl"
 
 local repoSteps = new Mapping<String, Step> {
   ["taplo"] = Builtins.taplo

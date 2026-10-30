@@ -1,4 +1,4 @@
-import "package://github.com/jdx/hk/releases/download/v2.8.0/hk@2.8.0#/Config.pkl" as Config
+import "package://github.com/jdx/hk/releases/download/v2.10.0/hk@2.10.0#/Config.pkl" as Config
 
 // hk types a file as Python by a `.py` or `.pyi` extension or a `python` shebang. It types a
 // `#!/usr/bin/env -S uv run --script` file as `uv`, so selecting by `types = List("python")` skips
