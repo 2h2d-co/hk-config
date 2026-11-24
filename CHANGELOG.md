@@ -4,6 +4,20 @@ All notable changes to `hk-config` will be documented in this file.
 See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.20.0](https://github.com/2h2d-co/hk-config/compare/v0.19.0..v0.20.0) - 2026-11-24
+#### Features
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) require hk 2.13.0 - ([0ad3474](https://github.com/2h2d-co/hk-config/commit/0ad347449c9ace56ba9e1e90217b6f778aa955e8)) - Kaan Ozdokmeci
+#### Documentation
+- point examples at v0.19.0 - ([5146e48](https://github.com/2h2d-co/hk-config/commit/5146e48e75959444014406089a6d946e5afce243)) - Kaan Ozdokmeci
+#### Continuous Integration
+- (**deps**) bump jdx/mise-action from 5.2.1 to 5.2.9 (#18) - ([825e858](https://github.com/2h2d-co/hk-config/commit/825e85801aa898146161f91ddb503b0070ed7e2e)) - dependabot[bot], dependabot[bot]
+- run workflows with mise 2026.11.8 - ([caef7f4](https://github.com/2h2d-co/hk-config/commit/caef7f4b1e19a7424952095cfa1cb3a8f20661b8)) - Kaan Ozdokmeci
+- remove the temporary eMudhra CA distrust step - ([930feef](https://github.com/2h2d-co/hk-config/commit/930feefb932dfb25c310617ca2aec3ebd6452ea1)) - Kaan Ozdokmeci
+#### Miscellaneous Chores
+- (**tools**) update hk to 2.13.0 - ([f7fd252](https://github.com/2h2d-co/hk-config/commit/f7fd252033261d13a6472fea12384d582cb28e95)) - Kaan Ozdokmeci
+- (**tools**) update Betterleaks, jactionlint, Pkl, Ruff, and zizmor - ([9377b43](https://github.com/2h2d-co/hk-config/commit/9377b4393d58501a7c3f34b9da6a38642f01b4c4)) - Kaan Ozdokmeci
+
+- - -
 ## [v0.19.0](https://github.com/2h2d-co/hk-config/compare/v0.18.0..v0.19.0) - 2026-10-30
 #### Features
 - ![BREAKING](https://img.shields.io/badge/BREAKING-red) always fix and stash in the default pre-commit hook - ([b9dbd41](https://github.com/2h2d-co/hk-config/commit/b9dbd412ec620a646b36456f3402d5e1020ecfd0)) - Kaan Ozdokmeci
